@@ -4,7 +4,6 @@ import React, {useState} from 'react';
 import {Calendar} from '@/components/ui/calendar';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {sendEmail} from '@/services/email-service';
@@ -14,14 +13,9 @@ import {cn} from '@/lib/utils';
 import {format} from 'date-fns';
 import {Warehouse} from 'lucide-react';
 
-const breakfastTypes = [
-  {value: 'Zillertal Frühstück', label: 'Zillertal Frühstück'},
-  {value: 'kleines Frühstück', label: 'Kleines Frühstück'},
-];
-
 export default function Home() {
-  const [breakfastType, setBreakfastType] = useState(breakfastTypes[0].value);
-  const [breakfastQuantity, setBreakfastQuantity] = useState(1);
+  const [zillertalQuantity, setZillertalQuantity] = useState(0);
+  const [kleinesQuantity, setKleinesQuantity] = useState(0);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [email, setEmail] = useState('');
   const [apartmentNumber, setApartmentNumber] = useState('');
@@ -38,12 +32,20 @@ export default function Home() {
       return;
     }
 
+    if (zillertalQuantity === 0 && kleinesQuantity === 0) {
+      toast({
+        title: 'Error',
+        description: 'Please select at least one breakfast.',
+      });
+      return;
+    }
+
     const orderDetails = {
-      breakfastType,
-      breakfastQuantity,
       date: date.toISOString(),
       email,
       apartmentNumber,
+      zillertalQuantity,
+      kleinesQuantity,
     };
 
     try {
@@ -51,14 +53,20 @@ export default function Home() {
       await sendEmail({
         to: email,
         subject: 'Frühstücksglocke - Order Confirmation',
-        body: `Your order for ${breakfastQuantity} x ${breakfastType} on ${date.toLocaleDateString()} has been placed.`,
+        body: `Your order has been placed:
+          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück` : ''}
+          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück` : ''}
+          on ${date.toLocaleDateString()}.`,
       });
 
       // Owner email
       await sendEmail({
         to: 'owner@example.com',
         subject: 'Frühstücksglocke - New Order',
-        body: `New order from Apartment ${apartmentNumber} for ${breakfastQuantity} x ${breakfastType} on ${date.toLocaleDateString()}. Guest email: ${email}`,
+        body: `New order from Apartment ${apartmentNumber} for:
+          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück` : ''}
+          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück` : ''}
+          on ${date.toLocaleDateString()}. Guest email: ${email}`,
       });
 
       setConfirmation(orderDetails);
@@ -77,19 +85,27 @@ export default function Home() {
 
   const resetForm = () => {
     setConfirmation(null);
-    setBreakfastType(breakfastTypes[0].value);
-    setBreakfastQuantity(1);
+    setZillertalQuantity(0);
+    setKleinesQuantity(0);
     setDate(undefined);
     setEmail('');
     setApartmentNumber('');
   };
 
-  const incrementBreakfast = () => {
-    setBreakfastQuantity((prev) => prev + 1);
+  const incrementZillertal = () => {
+    setZillertalQuantity((prev) => prev + 1);
   };
 
-  const decrementBreakfast = () => {
-    setBreakfastQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decrementZillertal = () => {
+    setZillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const incrementKleines = () => {
+    setKleinesQuantity((prev) => prev + 1);
+  };
+
+  const decrementKleines = () => {
+    setKleinesQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   return (
@@ -109,12 +125,16 @@ export default function Home() {
           {confirmation ? (
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-gray-800">Order Confirmation</h2>
-              <p className="text-gray-700">
-                Breakfast Type: {confirmation.breakfastType}
-              </p>
-              <p className="text-gray-700">
-                Quantity: {confirmation.breakfastQuantity}
-              </p>
+              {confirmation.zillertalQuantity > 0 && (
+                <p className="text-gray-700">
+                  Zillertal Frühstück: {confirmation.zillertalQuantity}
+                </p>
+              )}
+              {confirmation.kleinesQuantity > 0 && (
+                <p className="text-gray-700">
+                  Kleines Frühstück: {confirmation.kleinesQuantity}
+                </p>
+              )}
               <p className="text-gray-700">
                 Date: {new Date(confirmation.date).toLocaleDateString()}
               </p>
@@ -153,42 +173,56 @@ export default function Home() {
                 />
               </div>
               <div>
-                <Label htmlFor="breakfastType">Breakfast Type</Label>
-                <Select value={breakfastType} onValueChange={setBreakfastType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select breakfast type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {breakfastTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="breakfastQuantity">Quantity</Label>
+                <Label htmlFor="zillertalQuantity">Zillertal Frühstück</Label>
                 <div className="flex items-center space-x-2">
                   <Button
                     type="button"
-                    onClick={decrementBreakfast}
+                    onClick={decrementZillertal}
                     variant="outline"
                     className="h-8 w-8"
                   >
                     -
                   </Button>
                   <Input
-                    id="breakfastQuantity"
+                    id="zillertalQuantity"
                     type="number"
-                    min="1"
-                    value={breakfastQuantity}
+                    min="0"
+                    value={zillertalQuantity}
                     readOnly
                     className="w-16 text-center"
                   />
                   <Button
                     type="button"
-                    onClick={incrementBreakfast}
+                    onClick={incrementZillertal}
+                    variant="outline"
+                    className="h-8 w-8"
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="kleinesQuantity">Kleines Frühstück</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    onClick={decrementKleines}
+                    variant="outline"
+                    className="h-8 w-8"
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="kleinesQuantity"
+                    type="number"
+                    min="0"
+                    value={kleinesQuantity}
+                    readOnly
+                    className="w-16 text-center"
+                  />
+                  <Button
+                    type="button"
+                    onClick={incrementKleines}
                     variant="outline"
                     className="h-8 w-8"
                   >
