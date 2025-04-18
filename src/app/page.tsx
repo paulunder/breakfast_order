@@ -12,6 +12,7 @@ import {Toaster} from '@/components/ui/toaster';
 import {cn} from '@/lib/utils';
 import {format} from 'date-fns';
 import {Warehouse} from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
   const [zillertalQuantity, setZillertalQuantity] = useState(0);
@@ -172,64 +173,103 @@ export default function Home() {
                   placeholder="guest@example.com"
                 />
               </div>
-              <div>
+
+              <div className="space-y-2">
                 <Label htmlFor="zillertalQuantity">Zillertal Frühstück</Label>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    type="button"
-                    onClick={decrementZillertal}
-                    variant="outline"
-                    className="h-8 w-8"
-                  >
-                    -
-                  </Button>
-                  <Input
-                    id="zillertalQuantity"
-                    type="number"
-                    min="0"
-                    value={zillertalQuantity}
-                    readOnly
-                    className="w-16 text-center"
-                  />
-                  <Button
-                    type="button"
-                    onClick={incrementZillertal}
-                    variant="outline"
-                    className="h-8 w-8"
-                  >
-                    +
-                  </Button>
-                </div>
+                <Card>
+                  <CardContent className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Image
+                        src="https://picsum.photos/200/150"
+                        alt="Zillertal Frühstück"
+                        width={200}
+                        height={150}
+                        className="rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        A hearty breakfast option with local Zillertal specialties.
+                      </p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button
+                          type="button"
+                          onClick={decrementZillertal}
+                          variant="outline"
+                          className="h-8 w-8"
+                        >
+                          -
+                        </Button>
+                        <Input
+                          id="zillertalQuantity"
+                          type="number"
+                          min="0"
+                          value={zillertalQuantity}
+                          readOnly
+                          className="w-16 text-center"
+                        />
+                        <Button
+                          type="button"
+                          onClick={incrementZillertal}
+                          variant="outline"
+                          className="h-8 w-8"
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-              <div>
+
+              <div className="space-y-2">
                 <Label htmlFor="kleinesQuantity">Kleines Frühstück</Label>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    type="button"
-                    onClick={decrementKleines}
-                    variant="outline"
-                    className="h-8 w-8"
-                  >
-                    -
-                  </Button>
-                  <Input
-                    id="kleinesQuantity"
-                    type="number"
-                    min="0"
-                    value={kleinesQuantity}
-                    readOnly
-                    className="w-16 text-center"
-                  />
-                  <Button
-                    type="button"
-                    onClick={incrementKleines}
-                    variant="outline"
-                    className="h-8 w-8"
-                  >
-                    +
-                  </Button>
-                </div>
+                <Card>
+                  <CardContent className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Image
+                        src="https://picsum.photos/200/150"
+                        alt="Kleines Frühstück"
+                        width={200}
+                        height={150}
+                        className="rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        A light breakfast option to start your day.
+                      </p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button
+                          type="button"
+                          onClick={decrementKleines}
+                          variant="outline"
+                          className="h-8 w-8"
+                        >
+                          -
+                        </Button>
+                        <Input
+                          id="kleinesQuantity"
+                          type="number"
+                          min="0"
+                          value={kleinesQuantity}
+                          readOnly
+                          className="w-16 text-center"
+                        />
+                        <Button
+                          type="button"
+                          onClick={incrementKleines}
+                          variant="outline"
+                          className="h-8 w-8"
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
+
               <div>
                 <Label>Date</Label>
                 <Calendar
