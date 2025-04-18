@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { sendOrderNotificationEmail } from "@/services/email";
 import { useToast } from "@/hooks/use-toast";
+import { Plus, Minus } from "lucide-react";
 
 interface MenuItem {
   id: number;
@@ -50,10 +51,24 @@ const menuItems: MenuItem[] = [
 export default function Home() {
   const [quantities, setQuantities] = useState<{ [id: number]: number }>({});
   const [email, setEmail] = useState("");
+  const [apartmentNumber, setApartmentNumber] = useState("");
   const { toast } = useToast();
 
-  const handleQuantityChange = (id: number, quantity: number) => {
-    setQuantities({ ...quantities, [id]: quantity });
+  const handleIncrement = (id: number) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: (prevQuantities[id] || 0) + 1,
+    }));
+  };
+
+  const handleDecrement = (id: number) => {
+    setQuantities((prevQuantities) => {
+      const newQuantity = Math.max((prevQuantities[id] || 0) - 1, 0);
+      return {
+        ...prevQuantities,
+        [id]: newQuantity,
+      };
+    });
   };
 
   const calculateTotal = () => {
@@ -71,6 +86,15 @@ export default function Home() {
       toast({
         title: "Error",
         description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!apartmentNumber) {
+      toast({
+        title: "Error",
+        description: "Please enter your apartment number.",
         variant: "destructive",
       });
       return;
@@ -94,6 +118,8 @@ export default function Home() {
         description: "Order submitted! You will receive a confirmation email.",
       });
       setQuantities({}); // Clear quantities after successful submission
+      setEmail(""); // Clear email after successful submission
+      setApartmentNumber(""); // Clear apartment number after successful submission
     } catch (error) {
       toast({
         title: "Error",
@@ -104,33 +130,45 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-2xl font-bold mb-4">Die Zillertalerin - Frühstück</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-background">
+      <h1 className="text-3xl font-bold mb-6 text-center text-foreground">
+        Die Zillertalerin - Frühstück
+      </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl px-4">
         {menuItems.map((item) => (
-          <Card key={item.id}>
+          <Card key={item.id} className="border-soft-gray shadow-md">
             <CardHeader>
-              <CardTitle>{item.name}</CardTitle>
-              <CardDescription>{item.description}</CardDescription>
+              <CardTitle className="text-xl font-semibold text-accent">
+                {item.name}
+              </CardTitle>
+              <CardDescription className="text-soft-gray">
+                {item.description}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <span>Price: €{item.price.toFixed(2)}</span>
-                <div className="flex items-center">
-                  <label htmlFor={`quantity-${item.id}`} className="mr-2">
-                    Quantity:
-                  </label>
-                  <Input
-                    id={`quantity-${item.id}`}
-                    type="number"
-                    min="0"
-                    value={quantities[item.id] || 0}
-                    onChange={(e) =>
-                      handleQuantityChange(item.id, parseInt(e.target.value))
-                    }
-                    className="w-20"
-                  />
+                <span className="text-lg text-foreground">
+                  Price: €{item.price.toFixed(2)}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() => handleDecrement(item.id)}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="text-lg text-foreground">
+                    {quantities[item.id] || 0}
+                  </span>
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() => handleIncrement(item.id)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -138,20 +176,35 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
-        <p>Total: €{total.toFixed(2)}</p>
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold mb-4 text-foreground">
+          Order Summary
+        </h2>
+        <p className="text-xl text-foreground">
+          Total: €{total.toFixed(2)}
+        </p>
       </div>
 
-      <div className="mt-4 flex flex-col items-center">
+      <div className="mt-6 flex flex-col items-center w-full max-w-md space-y-4 px-4">
         <Input
           type="email"
           placeholder="Your Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full max-w-xs mb-2"
+          className="w-full rounded-md shadow-sm text-lg"
         />
-        <Button onClick={handleSubmit} disabled={total === 0}>
+        <Input
+          type="text"
+          placeholder="Apartment Number"
+          value={apartmentNumber}
+          onChange={(e) => setApartmentNumber(e.target.value)}
+          className="w-full rounded-md shadow-sm text-lg"
+        />
+        <Button
+          onClick={handleSubmit}
+          disabled={total === 0}
+          className="w-full bg-accent text-primary-foreground rounded-md py-3 text-xl font-semibold hover:bg-burnt-orange focus:ring-2 focus:ring-burnt-orange focus:ring-offset-1"
+        >
           Submit Order
         </Button>
       </div>
