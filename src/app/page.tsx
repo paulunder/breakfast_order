@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Calendar} from '@/components/ui/calendar';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
@@ -24,6 +24,12 @@ export default function Home() {
 
   const zillertalPrice = 15; // Price for Zillertal Frühstück
   const kleinesPrice = 10; // Price for Kleines Frühstück
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    // Update total price whenever quantities or prices change
+    setTotalPrice(zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice);
+  }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +56,8 @@ export default function Home() {
       apartmentNumber,
       zillertalQuantity,
       kleinesQuantity,
+      totalPrice,
     };
-
-    const totalPrice = zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice;
 
     try {
       // Guest email
@@ -153,7 +158,7 @@ export default function Home() {
                 Email: {confirmation.email}
               </p>
               <p className="text-gray-700">
-                Total Price: €{confirmation.zillertalQuantity * zillertalPrice + confirmation.kleinesQuantity * kleinesPrice}
+                Total Price: €{confirmation.totalPrice}
               </p>
               <Button onClick={resetForm} className="bg-90ee90 text-white hover:bg-70ee70">
                 Place Another Order
@@ -298,6 +303,17 @@ export default function Home() {
                   </p>
                 )}
               </div>
+
+              <div>
+                <Label htmlFor="total">Total</Label>
+                <Input
+                  id="total"
+                  type="text"
+                  value={`€${totalPrice.toFixed(2)}`}
+                  readOnly
+                />
+              </div>
+
               <Button className="bg-ffa07a text-white hover:bg-ff805a w-full">
                 Place Order
               </Button>
