@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { sendOrderNotificationEmail } from "@/services/email";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Minus } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface MenuItem {
   id: number;
@@ -53,6 +54,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [apartmentNumber, setApartmentNumber] = useState("");
   const { toast } = useToast();
+  const [submissionConfirmation, setSubmissionConfirmation] = useState(false);
 
   const handleIncrement = (id: number) => {
     setQuantities((prevQuantities) => ({
@@ -120,6 +122,10 @@ export default function Home() {
       setQuantities({}); // Clear quantities after successful submission
       setEmail(""); // Clear email after successful submission
       setApartmentNumber(""); // Clear apartment number after successful submission
+      setSubmissionConfirmation(true);
+      setTimeout(() => {
+        setSubmissionConfirmation(false);
+      }, 3000);
     } catch (error) {
       toast({
         title: "Error",
@@ -131,6 +137,14 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-4 bg-background">
+      {submissionConfirmation && (
+        <Alert className="w-full max-w-md mb-4">
+          <AlertTitle>Order Submitted!</AlertTitle>
+          <AlertDescription>
+            Thank you for your order. A confirmation email has been sent.
+          </AlertDescription>
+        </Alert>
+      )}
       <h1 className="text-3xl font-bold mb-6 text-center text-foreground">
         Die Zillertalerin - Frühstück
       </h1>

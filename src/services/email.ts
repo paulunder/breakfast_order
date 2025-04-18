@@ -15,7 +15,8 @@ export interface Order {
  */
 export async function sendOrderNotificationEmail(
   order: Order,
-  recipientEmail: string
+  recipientEmail: string,
+  apartmentNumber?: string
 ): Promise<void> {
   // TODO: Implement this by calling an API.
   console.log(
