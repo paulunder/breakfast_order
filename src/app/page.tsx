@@ -21,7 +21,7 @@ const breakfastTypes = [
 
 export default function Home() {
   const [breakfastType, setBreakfastType] = useState(breakfastTypes[0].value);
-  const [numberOfPeople, setNumberOfPeople] = useState('1');
+  const [breakfastQuantity, setBreakfastQuantity] = useState(1);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [email, setEmail] = useState('');
   const [apartmentNumber, setApartmentNumber] = useState('');
@@ -40,7 +40,7 @@ export default function Home() {
 
     const orderDetails = {
       breakfastType,
-      numberOfPeople,
+      breakfastQuantity,
       date: date.toISOString(),
       email,
       apartmentNumber,
@@ -51,14 +51,14 @@ export default function Home() {
       await sendEmail({
         to: email,
         subject: 'Frühstücksglocke - Order Confirmation',
-        body: `Your order for ${numberOfPeople} x ${breakfastType} on ${date.toLocaleDateString()} has been placed.`,
+        body: `Your order for ${breakfastQuantity} x ${breakfastType} on ${date.toLocaleDateString()} has been placed.`,
       });
 
       // Owner email
       await sendEmail({
         to: 'owner@example.com',
         subject: 'Frühstücksglocke - New Order',
-        body: `New order from Apartment ${apartmentNumber} for ${numberOfPeople} x ${breakfastType} on ${date.toLocaleDateString()}. Guest email: ${email}`,
+        body: `New order from Apartment ${apartmentNumber} for ${breakfastQuantity} x ${breakfastType} on ${date.toLocaleDateString()}. Guest email: ${email}`,
       });
 
       setConfirmation(orderDetails);
@@ -78,10 +78,18 @@ export default function Home() {
   const resetForm = () => {
     setConfirmation(null);
     setBreakfastType(breakfastTypes[0].value);
-    setNumberOfPeople('1');
+    setBreakfastQuantity(1);
     setDate(undefined);
     setEmail('');
     setApartmentNumber('');
+  };
+
+  const incrementBreakfast = () => {
+    setBreakfastQuantity((prev) => prev + 1);
+  };
+
+  const decrementBreakfast = () => {
+    setBreakfastQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   return (
@@ -105,7 +113,7 @@ export default function Home() {
                 Breakfast Type: {confirmation.breakfastType}
               </p>
               <p className="text-gray-700">
-                Number of People: {confirmation.numberOfPeople}
+                Quantity: {confirmation.breakfastQuantity}
               </p>
               <p className="text-gray-700">
                 Date: {new Date(confirmation.date).toLocaleDateString()}
@@ -160,15 +168,33 @@ export default function Home() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="numberOfPeople">Number of People</Label>
-                <Input
-                  id="numberOfPeople"
-                  type="number"
-                  min="1"
-                  value={numberOfPeople}
-                  onChange={(e) => setNumberOfPeople(e.target.value)}
-                  required
-                />
+                <Label htmlFor="breakfastQuantity">Quantity</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    onClick={decrementBreakfast}
+                    variant="outline"
+                    className="h-8 w-8"
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="breakfastQuantity"
+                    type="number"
+                    min="1"
+                    value={breakfastQuantity}
+                    readOnly
+                    className="w-16 text-center"
+                  />
+                  <Button
+                    type="button"
+                    onClick={incrementBreakfast}
+                    variant="outline"
+                    className="h-8 w-8"
+                  >
+                    +
+                  </Button>
+                </div>
               </div>
               <div>
                 <Label>Date</Label>
