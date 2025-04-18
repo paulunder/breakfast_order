@@ -22,6 +22,9 @@ export default function Home() {
   const [apartmentNumber, setApartmentNumber] = useState('');
   const [confirmation, setConfirmation] = useState<any>(null);
 
+  const zillertalPrice = 15; // Price for Zillertal Frühstück
+  const kleinesPrice = 10; // Price for Kleines Frühstück
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -49,15 +52,18 @@ export default function Home() {
       kleinesQuantity,
     };
 
+    const totalPrice = zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice;
+
     try {
       // Guest email
       await sendEmail({
         to: email,
         subject: 'Frühstücksglocke - Order Confirmation',
         body: `Your order has been placed:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück` : ''}
-          on ${date.toLocaleDateString()}.`,
+          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
+          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          on ${date.toLocaleDateString()}.
+          Total Price: €${totalPrice}`,
       });
 
       // Owner email
@@ -65,9 +71,10 @@ export default function Home() {
         to: 'owner@example.com',
         subject: 'Frühstücksglocke - New Order',
         body: `New order from Apartment ${apartmentNumber} for:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück` : ''}
-          on ${date.toLocaleDateString()}. Guest email: ${email}`,
+          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
+          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          on ${date.toLocaleDateString()}. Guest email: ${email}
+          Total Price: €${totalPrice}`,
       });
 
       setConfirmation(orderDetails);
@@ -128,12 +135,12 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-gray-800">Order Confirmation</h2>
               {confirmation.zillertalQuantity > 0 && (
                 <p className="text-gray-700">
-                  Zillertal Frühstück: {confirmation.zillertalQuantity}
+                  Zillertal Frühstück: {confirmation.zillertalQuantity} x €{zillertalPrice}
                 </p>
               )}
               {confirmation.kleinesQuantity > 0 && (
                 <p className="text-gray-700">
-                  Kleines Frühstück: {confirmation.kleinesQuantity}
+                  Kleines Frühstück: {confirmation.kleinesQuantity} x €{kleinesPrice}
                 </p>
               )}
               <p className="text-gray-700">
@@ -144,6 +151,9 @@ export default function Home() {
               </p>
               <p className="text-gray-700">
                 Email: {confirmation.email}
+              </p>
+              <p className="text-gray-700">
+                Total Price: €{confirmation.zillertalQuantity * zillertalPrice + confirmation.kleinesQuantity * kleinesPrice}
               </p>
               <Button onClick={resetForm} className="bg-90ee90 text-white hover:bg-70ee70">
                 Place Another Order
@@ -175,7 +185,7 @@ export default function Home() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="zillertalQuantity">Zillertal Frühstück</Label>
+                <Label htmlFor="zillertalQuantity">Zillertal Frühstück (€{zillertalPrice})</Label>
                 <Card>
                   <CardContent className="grid grid-cols-2 gap-4">
                     <div>
@@ -223,7 +233,7 @@ export default function Home() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="kleinesQuantity">Kleines Frühstück</Label>
+                <Label htmlFor="kleinesQuantity">Kleines Frühstück (€{kleinesPrice})</Label>
                 <Card>
                   <CardContent className="grid grid-cols-2 gap-4">
                     <div>
