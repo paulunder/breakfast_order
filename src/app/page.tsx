@@ -10,7 +10,7 @@ import {sendEmail} from '@/services/email-service';
 import {toast} from '@/hooks/use-toast';
 import {Toaster} from '@/components/ui/toaster';
 import {cn} from '@/lib/utils';
-import {format} from 'date-fns';
+import {format, isPast, isToday, setHours, setMinutes, setSeconds} from 'date-fns';
 import {Warehouse} from 'lucide-react';
 import Image from 'next/image';
 
@@ -31,6 +31,21 @@ export default function Home() {
     setTotalPrice(zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice);
   }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice]);
 
+  const isDateSelectable = (date: Date) => {
+    const now = new Date();
+    const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
+
+    if (isPast(date)) {
+      return false; // Disable past dates
+    }
+
+    if (isToday(date) && now >= sixteenHoursToday) {
+      return false; // Disable today's date if it's after 4 PM
+    }
+
+    return true; // Enable future dates and today's date if before 4 PM
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -38,6 +53,17 @@ export default function Home() {
       toast({
         title: 'Error',
         description: 'Please select a date.',
+      });
+      return;
+    }
+
+    const now = new Date();
+    const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
+
+    if (isToday(date) && now >= sixteenHoursToday) {
+      toast({
+        title: 'Error',
+        description: 'Orders for today must be placed before 4 PM.',
       });
       return;
     }
@@ -291,6 +317,7 @@ export default function Home() {
                   mode="single"
                   selected={date}
                   onSelect={setDate}
+                  disabled={!isDateSelectable}
                   className={cn('rounded-md border bg-white')}
                 />
                 {date ? (
