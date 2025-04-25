@@ -5,7 +5,6 @@ import {Calendar} from '@/components/ui/calendar';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
-import {Button} from '@/components/ui/button';
 import {sendEmail} from '@/services/email-service';
 import {toast} from '@/hooks/use-toast';
 import {Toaster} from '@/components/ui/toaster';
@@ -13,6 +12,9 @@ import {cn} from '@/lib/utils';
 import {format, isPast, isToday, setHours, setMinutes, setSeconds} from 'date-fns';
 import {Warehouse} from 'lucide-react';
 import Image from 'next/image';
+import { Button } from "@/components/ui/button"
+import { Slot } from "@radix-ui/react-slot"
+
 
 export default function Home() {
   const [zillertalQuantity, setZillertalQuantity] = useState(0);
@@ -340,10 +342,36 @@ export default function Home() {
                   readOnly
                 />
               </div>
+              <Button
+  asChild
+  variant="outline"
+  className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50"
+>
+  <a
+    href={`https://wa.me/436767011119?text=${encodeURIComponent(
+      `Frühstücksbestellung:
+Apartment: ${apartmentNumber}
+Email: ${email}
+Datum: ${date ? format(date, 'PPP') : 'Nicht angegeben'}
+${zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : ''}
+${kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : ''}
+Gesamtpreis: €${totalPrice.toFixed(2)}`
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    
+  <Image
+    src="/images/whatsapp_green.png"
+    alt="WhatsApp Logo"
+    width={20}
+    height={20}
+    className="inline-block mr-2"
+  />
+  Bestellung senden
+  </a>
+</Button>
 
-              <Button className="bg-ffa07a text-white hover:bg-ff805a w-full">
-                Place Order
-              </Button>
             </form>
           )}
         </CardContent>
