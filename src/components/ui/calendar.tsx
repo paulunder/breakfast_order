@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
+import { startOfDay, setHours, isBefore } from "date-fns"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -15,9 +16,30 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const now = new Date()
+  const cutoff = setHours(startOfDay(now), 16) // today at 16:00
+  const today = startOfDay(now)
+  const tomorrow = startOfDay(new Date(now.getTime() + 24 * 60 * 60 * 1000))
+
+  function disableDate(date: Date) {
+    const selectedDay = startOfDay(date)
+
+    // Always disable past days
+    if (isBefore(selectedDay, today)) return true
+
+    // Disable today if it's after 16:00
+    if (selectedDay.getTime() === today.getTime() && now > cutoff) return true
+
+    // Disable tomorrow if it's after 16:00
+    if (selectedDay.getTime() === tomorrow.getTime() && now > cutoff) return true
+
+    return false
+  }
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      disabled={disableDate}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",

@@ -9,11 +9,13 @@ import {sendEmail} from '@/services/email-service';
 import {toast} from '@/hooks/use-toast';
 import {Toaster} from '@/components/ui/toaster';
 import {cn} from '@/lib/utils';
-import {format, isPast, isToday, setHours, setMinutes, setSeconds} from 'date-fns';
+import {format, isPast, isToday, setHours, setMinutes, setSeconds, startOfDay, isBefore} from 'date-fns';
 import {Warehouse} from 'lucide-react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Slot } from "@radix-ui/react-slot"
+import BreakfastOrderButton from "@/components/ui/BreakfastOrderButton"
+
 
 
 export default function Home() {
@@ -149,6 +151,33 @@ export default function Home() {
     setKleinesQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
+
+  function isDateDisabled(date: Date): boolean {
+    const now = new Date()
+    const today = startOfDay(now)
+    const cutoff = setHours(today, 16)
+    const selectedDay = startOfDay(date)
+    const tomorrow = startOfDay(new Date(now.getTime() + 24 * 60 * 60 * 1000))
+
+    if (isBefore(selectedDay, today)) return true
+    if (selectedDay.getTime() === today.getTime() && now > cutoff) return true
+    if (selectedDay.getTime() === tomorrow.getTime() && now > cutoff) return true
+
+    return false
+  }
+
+  const BreakfastOrderPage = () => {
+    const [apartmentNumber, setApartmentNumber] = useState("")
+    const [email, setEmail] = useState("")
+    const [date, setDate] = useState<Date | undefined>(undefined)
+    const [zillertalQuantity, setZillertalQuantity] = useState(0)
+    const [kleinesQuantity, setKleinesQuantity] = useState(0)
+  
+    const zillertalPrice = 15.99
+    const kleinesPrice = 9.99
+    const totalPrice = zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-f5f5dc">
       <Toaster />
@@ -159,13 +188,13 @@ export default function Home() {
             Frühstücksglocke
           </CardTitle>
           <CardDescription className="text-sm text-gray-600">
-            Order your breakfast for a delightful start to the day.
+            Bestelle dein Frühstück direkt ans Zimmer.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {confirmation ? (
             <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-gray-800">Order Confirmation</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Bestellbestätigung</h2>
               {confirmation.zillertalQuantity > 0 && (
                 <p className="text-gray-700">
                   Zillertal Frühstück: {confirmation.zillertalQuantity} x €{zillertalPrice}
@@ -177,32 +206,32 @@ export default function Home() {
                 </p>
               )}
               <p className="text-gray-700">
-                Date: {new Date(confirmation.date).toLocaleDateString()}
+                Datum: {new Date(confirmation.date).toLocaleDateString()}
               </p>
               <p className="text-gray-700">
-                Apartment Number: {confirmation.apartmentNumber}
+                Apartment Nummer: {confirmation.apartmentNumber}
               </p>
               <p className="text-gray-700">
                 Email: {confirmation.email}
               </p>
               <p className="text-gray-700">
-                Total Price: €{confirmation.totalPrice}
+                Preis: €{confirmation.totalPrice}
               </p>
               <Button onClick={resetForm} className="bg-90ee90 text-white hover:bg-70ee70">
-                Place Another Order
+                Noch etwas bestellen
               </Button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="apartmentNumber">Apartment Number</Label>
+                <Label htmlFor="apartmentNumber">Apartment Nummer</Label>
                 <Input
                   id="apartmentNumber"
                   type="text"
                   value={apartmentNumber}
                   onChange={(e) => setApartmentNumber(e.target.value)}
                   required
-                  placeholder="Enter apartment number"
+                  placeholder="Appartment Nummer"
                 />
               </div>
               <div>
@@ -342,36 +371,19 @@ export default function Home() {
                   readOnly
                 />
               </div>
-              <Button
-  asChild
-  variant="outline"
-  className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50"
->
-  <a
-    href={`https://wa.me/436767011119?text=${encodeURIComponent(
-      `Frühstücksbestellung:
-Apartment: ${apartmentNumber}
-Email: ${email}
-Datum: ${date ? format(date, 'PPP') : 'Nicht angegeben'}
-${zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : ''}
-${kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : ''}
-Gesamtpreis: €${totalPrice.toFixed(2)}`
-    )}`}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    
-  <Image
-    src="/images/whatsapp_green.png"
-    alt="WhatsApp Logo"
-    width={20}
-    height={20}
-    className="inline-block mr-2"
-  />
-  Bestellung senden
-  </a>
-</Button>
 
+              
+              <BreakfastOrderButton
+        apartmentNumber={apartmentNumber}
+        email={email}
+        date={date}
+        zillertalQuantity={zillertalQuantity}
+        zillertalPrice={zillertalPrice}
+        kleinesQuantity={kleinesQuantity}
+        kleinesPrice={kleinesPrice}
+        totalPrice={totalPrice}
+      />
+    
             </form>
           )}
         </CardContent>
