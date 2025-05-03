@@ -15,25 +15,180 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Slot } from "@radix-ui/react-slot"
 import BreakfastOrderButton from "@/components/ui/BreakfastOrderButton"
+import { DateRange } from 'react-day-picker';
+import { de } from "date-fns/locale" // Importing the German locale
+import ProductCard from '@/components/ui/ProductCard';
 
 
+
+
+// export default function Home() {
+//   const [zillertalQuantity, setZillertalQuantity] = useState(0);
+//   const [kleinesQuantity, setKleinesQuantity] = useState(0);
+//   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+//   const [email, setEmail] = useState('');
+//   const [apartmentNumber, setApartmentNumber] = useState('');
+//   const [confirmation, setConfirmation] = useState<any>(null);
+
+//   const zillertalPrice = 15; // Price for Zillertal Frühstück
+//   const kleinesPrice = 10; // Price for Kleines Frühstück
+//   const [totalPrice, setTotalPrice] = useState(0);
+
+//   useEffect(() => {
+//     // Update total price whenever quantities or prices change
+//     setTotalPrice(zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice);
+//   }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice]);
+
+//   const isDateSelectable = (date: Date) => {
+//     const now = new Date();
+//     const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
+
+//     if (isPast(date)) {
+//       return false; // Disable past dates
+//     }
+
+//     if (isToday(date) && now >= sixteenHoursToday) {
+//       return false; // Disable today's date if it's after 4 PM
+//     }
+
+//     return true; // Enable future dates and today's date if before 4 PM
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     if (!date) {
+//       toast({
+//         title: 'Error',
+//         description: 'Please select a date.',
+//       });
+//       return;
+//     }
+
+//     const now = new Date();
+//     const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
+
+//     if (isToday(date) && now >= sixteenHoursToday) {
+//       toast({
+//         title: 'Error',
+//         description: 'Orders for today must be placed before 4 PM.',
+//       });
+//       return;
+//     }
+
+//     if (zillertalQuantity === 0 && kleinesQuantity === 0) {
+//       toast({
+//         title: 'Error',
+//         description: 'Please select at least one breakfast.',
+//       });
+//       return;
+//     }
+
+//     const orderDetails = {
+//       date: date.toISOString(),
+//       email,
+//       apartmentNumber,
+//       zillertalQuantity,
+//       kleinesQuantity,
+//       totalPrice,
+//     };
+
+//     try {
+//       // Guest email
+//       await sendEmail({
+//         to: email,
+//         subject: 'Frühstücksglocke - Order Confirmation',
+//         body: `Your order has been placed:
+//           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
+//           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+//           on ${date.toLocaleDateString()}.
+//           Total Price: €${totalPrice}`,
+//       });
+
+//       // Owner email
+//       await sendEmail({
+//         to: 'owner@example.com',
+//         subject: 'Frühstücksglocke - New Order',
+//         body: `New order from Apartment ${apartmentNumber} for:
+//           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
+//           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+//           on ${date.toLocaleDateString()}. Guest email: ${email}
+//           Total Price: €${totalPrice}`,
+//       });
+
+//       setConfirmation(orderDetails);
+
+//       toast({
+//         title: 'Success',
+//         description: 'Order placed successfully! Confirmation sent to your email.',
+//       });
+//     } catch (error: any) {
+//       toast({
+//         title: 'Error',
+//         description: error.message || 'Failed to place order.',
+//       });
+//     }
+//   };
+
+//   const resetForm = () => {
+//     setConfirmation(null);
+//     setZillertalQuantity(0);
+//     setKleinesQuantity(0);
+//     setDate(undefined);
+//     setEmail('');
+//     setApartmentNumber('');
+//   };
 
 export default function Home() {
   const [zillertalQuantity, setZillertalQuantity] = useState(0);
   const [kleinesQuantity, setKleinesQuantity] = useState(0);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [semmelQuantity, setSemmelQuantity] = useState(0);
+  const [kornspitzQuantity, setKornspitzQuantity] = useState(0);
+  const [croissantQuantity, setCroissantQuantity] = useState(0);
+  const [bauernbrotQuantity, setBauernbrotQuantity] = useState(0);
+  const [laugenstangeQuantity, setLaugenstangeQuantity] = useState(0);
+  const [esterhazyQuantity, setEsterhazyQuantity] = useState(0);
+  const [nussschneckeQuantity, setNussschneckeQuantity] = useState(0);
+  const [topfengolatschenQuantity, setTopfengolatschenQuantity] = useState(0);
+  const [marmorkuchenQuantity, setMarmorkuchenQuantity] = useState(0);  
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [email, setEmail] = useState('');
   const [apartmentNumber, setApartmentNumber] = useState('');
   const [confirmation, setConfirmation] = useState<any>(null);
 
   const zillertalPrice = 15; // Price for Zillertal Frühstück
   const kleinesPrice = 10; // Price for Kleines Frühstück
+  const semmelPrice = 0.80;
+  const kornspitzPrice = 1.60;
+  const croissantPrice = 2.50;
+  const bauernbrotPrice = 1.00;
+  const laugenstangePrice = 1.90;
+  const esterhazyPrice = 5.00;
+  const nussschneckePrice = 3.50;
+  const topfengolatschenPrice = 3.50;
+  const marmorkuchenPrice = 4.00;
+
+  const extractDaysFromDateRange = (dateRange: DateRange | undefined): string[] => {
+    if (!dateRange?.from) return [];
+
+    const days: string[] = [];
+    let currentDate = dateRange.from;
+
+    while (currentDate <= (dateRange.to || dateRange.from)) {
+      days.push(format(currentDate, 'yyyy-MM-dd'));
+      currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000); // Add one day
+    }
+
+    return days;
+  };
+
+
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     // Update total price whenever quantities or prices change
-    setTotalPrice(zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice);
-  }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice]);
+    setTotalPrice((zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice + semmelPrice * semmelQuantity + kornspitzPrice * kornspitzQuantity + croissantPrice * croissantQuantity + bauernbrotPrice * bauernbrotQuantity + laugenstangePrice * laugenstangeQuantity + esterhazyPrice * esterhazyQuantity + nussschneckePrice * nussschneckeQuantity + topfengolatschenPrice * topfengolatschenQuantity + marmorkuchenPrice * marmorkuchenQuantity) * extractDaysFromDateRange(dateRange).length);
+  }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice, semmelPrice, semmelQuantity, kornspitzPrice, kornspitzQuantity, croissantPrice, croissantQuantity, bauernbrotPrice, bauernbrotQuantity, laugenstangePrice, laugenstangeQuantity, esterhazyPrice, esterhazyQuantity, nussschneckePrice, nussschneckeQuantity, topfengolatschenPrice, topfengolatschenQuantity, marmorkuchenPrice, marmorkuchenQuantity]);
 
   const isDateSelectable = (date: Date) => {
     const now = new Date();
@@ -53,10 +208,10 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!date) {
+    if (!dateRange?.from) {
       toast({
         title: 'Error',
-        description: 'Please select a date.',
+        description: 'Please select at least one date.',
       });
       return;
     }
@@ -64,7 +219,11 @@ export default function Home() {
     const now = new Date();
     const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
 
-    if (isToday(date) && now >= sixteenHoursToday) {
+    // Check if the selected start date is today and after 4 PM
+    if (
+      isToday(dateRange.from) &&
+      now >= sixteenHoursToday
+    ) {
       toast({
         title: 'Error',
         description: 'Orders for today must be placed before 4 PM.',
@@ -81,7 +240,8 @@ export default function Home() {
     }
 
     const orderDetails = {
-      date: date.toISOString(),
+      fromDate: dateRange.from.toISOString(),
+      toDate: dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString(),
       email,
       apartmentNumber,
       zillertalQuantity,
@@ -97,7 +257,8 @@ export default function Home() {
         body: `Your order has been placed:
           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
-          on ${date.toLocaleDateString()}.
+          on ${format(dateRange.from, 'PPP')}.
+          ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Total Price: €${totalPrice}`,
       });
 
@@ -108,7 +269,9 @@ export default function Home() {
         body: `New order from Apartment ${apartmentNumber} for:
           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
-          on ${date.toLocaleDateString()}. Guest email: ${email}
+          on ${format(dateRange.from, 'PPP')}.
+          ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
+          Guest email: ${email}
           Total Price: €${totalPrice}`,
       });
 
@@ -130,7 +293,7 @@ export default function Home() {
     setConfirmation(null);
     setZillertalQuantity(0);
     setKleinesQuantity(0);
-    setDate(undefined);
+    setDateRange(undefined);
     setEmail('');
     setApartmentNumber('');
   };
@@ -151,6 +314,63 @@ export default function Home() {
     setKleinesQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
+  const incrementSemmel = () => {
+    setSemmelQuantity((prev) => prev + 1);
+  };
+  const decrementSemmel = () => {
+    setSemmelQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementKornspitz = () => {
+    setKornspitzQuantity((prev) => prev + 1);
+  };
+  const decrementKornspitz = () => {
+    setKornspitzQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementCroissant = () => {
+    setCroissantQuantity((prev) => prev + 1);
+  };
+  const decrementCroissant = () => {
+    setCroissantQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementBauernbrot = () => {
+    setBauernbrotQuantity((prev) => prev + 1);
+  };
+  const decrementBauernbrot = () => {
+    setBauernbrotQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementLaugenstange = () => {
+    setLaugenstangeQuantity((prev) => prev + 1);
+  };
+  const decrementLaugenstange = () => {
+    setLaugenstangeQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementEsterhazy = () => {
+    setEsterhazyQuantity((prev) => prev + 1);
+  };
+  const decrementEsterhazy = () => {
+    setEsterhazyQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+  const incrementNussschnecke = () => {
+    setNussschneckeQuantity((prev) => prev + 1);
+  };
+  const decrementNussschnecke = () => { 
+    setNussschneckeQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  }
+  const incrementTopfengolatschen = () => {
+    setTopfengolatschenQuantity((prev) => prev + 1);
+  };
+  const decrementTopfengolatschen = () => {
+    setTopfengolatschenQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  }
+  const incrementMarmorkuchen = () => {
+    setMarmorkuchenQuantity((prev) => prev + 1);
+  };
+  const decrementMarmorkuchen = () => {
+    setMarmorkuchenQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  }
+
+
+
 
   function isDateDisabled(date: Date): boolean {
     const now = new Date()
@@ -166,17 +386,9 @@ export default function Home() {
     return false
   }
 
-  const BreakfastOrderPage = () => {
-    const [apartmentNumber, setApartmentNumber] = useState("")
-    const [email, setEmail] = useState("")
-    const [date, setDate] = useState<Date | undefined>(undefined)
-    const [zillertalQuantity, setZillertalQuantity] = useState(0)
-    const [kleinesQuantity, setKleinesQuantity] = useState(0)
-  
-    const zillertalPrice = 15.99
-    const kleinesPrice = 9.99
-    const totalPrice = zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice
-  }
+
+
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-f5f5dc">
@@ -246,124 +458,145 @@ export default function Home() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="zillertalQuantity">Zillertal Frühstück (€{zillertalPrice})</Label>
-                <Card>
-                  <CardContent className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Image
-                        src="https://picsum.photos/200/150"
-                        alt="Zillertal Frühstück"
-                        width={200}
-                        height={150}
-                        className="rounded-md"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">
-                        A hearty breakfast option with local Zillertal specialties.
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Button
-                          type="button"
-                          onClick={decrementZillertal}
-                          variant="outline"
-                          className="h-8 w-8"
-                        >
-                          -
-                        </Button>
-                        <Input
-                          id="zillertalQuantity"
-                          type="number"
-                          min="0"
-                          value={zillertalQuantity}
-                          readOnly
-                          className="w-16 text-center"
-                        />
-                        <Button
-                          type="button"
-                          onClick={incrementZillertal}
-                          variant="outline"
-                          className="h-8 w-8"
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <div className="h4">Frühstücksservice</div>
 
-              <div className="space-y-2">
-                <Label htmlFor="kleinesQuantity">Kleines Frühstück (€{kleinesPrice})</Label>
-                <Card>
-                  <CardContent className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Image
-                        src="https://picsum.photos/200/150"
-                        alt="Kleines Frühstück"
-                        width={200}
-                        height={150}
-                        className="rounded-md"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">
-                        A light breakfast option to start your day.
-                      </p>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Button
-                          type="button"
-                          onClick={decrementKleines}
-                          variant="outline"
-                          className="h-8 w-8"
-                        >
-                          -
-                        </Button>
-                        <Input
-                          id="kleinesQuantity"
-                          type="number"
-                          min="0"
-                          value={kleinesQuantity}
-                          readOnly
-                          className="w-16 text-center"
-                        />
-                        <Button
-                          type="button"
-                          onClick={incrementKleines}
-                          variant="outline"
-                          className="h-8 w-8"
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <ProductCard
+                title="kleines Zillertaler Frühstück"
+                description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse"
+                price={zillertalPrice}
+                quantity={zillertalQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementZillertal}
+                decrement={decrementZillertal}
+              />
+
+              <ProductCard
+                title="großes Zillertaler Frühstück"
+                description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse"
+                price={kleinesPrice}
+                quantity={kleinesQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementKleines}
+                decrement={decrementKleines}
+              />
+
+              <div className="border-t border-gray-300 my-4"></div>
+              <div className="h4">Brötchenservice</div>
+
+              <ProductCard
+                title="Semmel"
+                description=""
+                price={semmelPrice}
+                quantity={semmelQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementSemmel}
+                decrement={decrementSemmel}
+              />
+
+              <ProductCard
+                title="Kornspitz"
+                description=""
+                price={kornspitzPrice}
+                quantity={kornspitzQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementKornspitz}
+                decrement={decrementKornspitz}
+              />
+
+              <ProductCard
+                title="Croissant"
+                description=""
+                price={croissantPrice}
+                quantity={croissantQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementCroissant}
+                decrement={decrementCroissant}
+              />
+
+              <ProductCard
+                title="Bauernbrotscheibe"
+                description=""
+                price={bauernbrotPrice}
+                quantity={bauernbrotQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementBauernbrot}
+                decrement={decrementBauernbrot}
+              />
+
+              <ProductCard
+                title="Laugenstange"
+                description=""
+                price={laugenstangePrice}
+                quantity={laugenstangeQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementLaugenstange}
+                decrement={decrementLaugenstange}
+              />
+
+              <div className="border-t border-gray-300 my-4"></div>
+              <div className="h4">Süßes</div>
+
+              <ProductCard
+                title="Esterhazy"
+                description=""
+                price={esterhazyPrice}
+                quantity={esterhazyQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementEsterhazy}
+                decrement={decrementEsterhazy}
+              />
+
+              <ProductCard
+                title="Nussschnecke"
+                description=""
+                price={nussschneckePrice}
+                quantity={nussschneckeQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementNussschnecke}
+                decrement={decrementNussschnecke}
+              />
+
+              <ProductCard
+                title="Topfengolatsche"
+                description=""
+                price={topfengolatschenPrice}
+                quantity={topfengolatschenQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementTopfengolatschen}
+                decrement={decrementTopfengolatschen}
+              />
+
+              <ProductCard
+                title="Marmorkuchen"
+                description=""
+                price={marmorkuchenPrice}
+                quantity={marmorkuchenQuantity}
+                imageUrl="https://picsum.photos/200/150"
+                increment={incrementMarmorkuchen}
+                decrement={decrementMarmorkuchen}
+              />
 
               <div>
-                <Label>Date</Label>
+                <Label>Datum</Label>
                 <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  disabled={!isDateSelectable}
-                  className={cn('rounded-md border bg-white')}
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                  locale={de}
+                  className="rounded-md border bg-white"
                 />
-                {date ? (
+                {dateRange?.from && dateRange?.to ? (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {format(date, 'PPP')}
+                    {format(dateRange.from, 'PPP', { locale: de })} – {format(dateRange.to, 'PPP', { locale: de })}
                   </p>
                 ) : (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Please select a date.
+                    Bitte wähle eine Zeitspanne aus.
                   </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="total">Total</Label>
+                <Label htmlFor="total">Summe</Label>
                 <Input
                   id="total"
                   type="text"
@@ -374,15 +607,33 @@ export default function Home() {
 
               
               <BreakfastOrderButton
-        apartmentNumber={apartmentNumber}
-        email={email}
-        date={date}
-        zillertalQuantity={zillertalQuantity}
-        zillertalPrice={zillertalPrice}
-        kleinesQuantity={kleinesQuantity}
-        kleinesPrice={kleinesPrice}
-        totalPrice={totalPrice}
-      />
+                apartmentNumber={apartmentNumber}
+                email={email}
+                date={dateRange}
+                zillertalQuantity={zillertalQuantity}
+                zillertalPrice={zillertalPrice}
+                kleinesQuantity={kleinesQuantity}
+                kleinesPrice={kleinesPrice}
+                semmelQuantity={semmelQuantity}
+                semmelPrice={semmelPrice}
+                kornspitzQuantity={kornspitzQuantity}
+                kornspitzPrice={kornspitzPrice}
+                croissantQuantity={croissantQuantity}
+                croissantPrice={croissantPrice}
+                bauernbrotQuantity={bauernbrotQuantity}
+                bauernbrotPrice={bauernbrotPrice}
+                laugenstangeQuantity={laugenstangeQuantity}
+                laugenstangePrice={laugenstangePrice}
+                esterhazyQuantity={esterhazyQuantity}
+                esterhazyPrice={esterhazyPrice}
+                nussschneckeQuantity={nussschneckeQuantity}
+                nussschneckePrice={nussschneckePrice}
+                topfengolatschenQuantity={topfengolatschenQuantity}
+                topfengolatschenPrice={topfengolatschenPrice}
+                marmorkuchenQuantity={marmorkuchenQuantity}
+                marmorkuchenPrice={marmorkuchenPrice}
+                totalPrice={totalPrice}
+              />
     
             </form>
           )}
@@ -390,4 +641,5 @@ export default function Home() {
       </Card>
     </div>
   );
+
 }
