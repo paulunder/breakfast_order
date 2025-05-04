@@ -9,135 +9,15 @@ import {sendEmail} from '@/services/email-service';
 import {toast} from '@/hooks/use-toast';
 import {Toaster} from '@/components/ui/toaster';
 import {cn} from '@/lib/utils';
-import {format, isPast, isToday, setHours, setMinutes, setSeconds, startOfDay, isBefore} from 'date-fns';
+import {format, isPast, isToday, setHours, setMinutes, setSeconds, startOfDay, isBefore, addDays} from 'date-fns';
 import {Warehouse} from 'lucide-react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Slot } from "@radix-ui/react-slot"
 import BreakfastOrderButton from "@/components/ui/BreakfastOrderButton"
 import { DateRange } from 'react-day-picker';
-import { de } from "date-fns/locale" // Importing the German locale
+import { de } from "date-fns/locale"
 import ProductCard from '@/components/ui/ProductCard';
-
-
-
-
-// export default function Home() {
-//   const [zillertalQuantity, setZillertalQuantity] = useState(0);
-//   const [kleinesQuantity, setKleinesQuantity] = useState(0);
-//   const [dateRange, setDateRange] = useState<DateRange | undefined>();
-//   const [email, setEmail] = useState('');
-//   const [apartmentNumber, setApartmentNumber] = useState('');
-//   const [confirmation, setConfirmation] = useState<any>(null);
-
-//   const zillertalPrice = 15; // Price for Zillertal Frühstück
-//   const kleinesPrice = 10; // Price for Kleines Frühstück
-//   const [totalPrice, setTotalPrice] = useState(0);
-
-//   useEffect(() => {
-//     // Update total price whenever quantities or prices change
-//     setTotalPrice(zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice);
-//   }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice]);
-
-//   const isDateSelectable = (date: Date) => {
-//     const now = new Date();
-//     const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
-
-//     if (isPast(date)) {
-//       return false; // Disable past dates
-//     }
-
-//     if (isToday(date) && now >= sixteenHoursToday) {
-//       return false; // Disable today's date if it's after 4 PM
-//     }
-
-//     return true; // Enable future dates and today's date if before 4 PM
-//   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     if (!date) {
-//       toast({
-//         title: 'Error',
-//         description: 'Please select a date.',
-//       });
-//       return;
-//     }
-
-//     const now = new Date();
-//     const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
-
-//     if (isToday(date) && now >= sixteenHoursToday) {
-//       toast({
-//         title: 'Error',
-//         description: 'Orders for today must be placed before 4 PM.',
-//       });
-//       return;
-//     }
-
-//     if (zillertalQuantity === 0 && kleinesQuantity === 0) {
-//       toast({
-//         title: 'Error',
-//         description: 'Please select at least one breakfast.',
-//       });
-//       return;
-//     }
-
-//     const orderDetails = {
-//       date: date.toISOString(),
-//       email,
-//       apartmentNumber,
-//       zillertalQuantity,
-//       kleinesQuantity,
-//       totalPrice,
-//     };
-
-//     try {
-//       // Guest email
-//       await sendEmail({
-//         to: email,
-//         subject: 'Frühstücksglocke - Order Confirmation',
-//         body: `Your order has been placed:
-//           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-//           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
-//           on ${date.toLocaleDateString()}.
-//           Total Price: €${totalPrice}`,
-//       });
-
-//       // Owner email
-//       await sendEmail({
-//         to: 'owner@example.com',
-//         subject: 'Frühstücksglocke - New Order',
-//         body: `New order from Apartment ${apartmentNumber} for:
-//           ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-//           ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
-//           on ${date.toLocaleDateString()}. Guest email: ${email}
-//           Total Price: €${totalPrice}`,
-//       });
-
-//       setConfirmation(orderDetails);
-
-//       toast({
-//         title: 'Success',
-//         description: 'Order placed successfully! Confirmation sent to your email.',
-//       });
-//     } catch (error: any) {
-//       toast({
-//         title: 'Error',
-//         description: error.message || 'Failed to place order.',
-//       });
-//     }
-//   };
-
-//   const resetForm = () => {
-//     setConfirmation(null);
-//     setZillertalQuantity(0);
-//     setKleinesQuantity(0);
-//     setDate(undefined);
-//     setEmail('');
-//     setApartmentNumber('');
-//   };
 
 export default function Home() {
   const [zillertalQuantity, setZillertalQuantity] = useState(0);
@@ -184,11 +64,43 @@ export default function Home() {
 
 
   const [totalPrice, setTotalPrice] = useState(0);
-
   useEffect(() => {
-    // Update total price whenever quantities or prices change
-    setTotalPrice((zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice + semmelPrice * semmelQuantity + kornspitzPrice * kornspitzQuantity + croissantPrice * croissantQuantity + bauernbrotPrice * bauernbrotQuantity + laugenstangePrice * laugenstangeQuantity + esterhazyPrice * esterhazyQuantity + nussschneckePrice * nussschneckeQuantity + topfengolatschenPrice * topfengolatschenQuantity + marmorkuchenPrice * marmorkuchenQuantity) * extractDaysFromDateRange(dateRange).length);
-  }, [zillertalQuantity, kleinesQuantity, zillertalPrice, kleinesPrice, semmelPrice, semmelQuantity, kornspitzPrice, kornspitzQuantity, croissantPrice, croissantQuantity, bauernbrotPrice, bauernbrotQuantity, laugenstangePrice, laugenstangeQuantity, esterhazyPrice, esterhazyQuantity, nussschneckePrice, nussschneckeQuantity, topfengolatschenPrice, topfengolatschenQuantity, marmorkuchenPrice, marmorkuchenQuantity]);
+    // If no date range is selected, don't calculate price
+    if (!dateRange?.from) {
+      setTotalPrice(0);
+      return;
+    }
+  
+    const numDays = extractDaysFromDateRange(dateRange).length;
+    const calculatedTotalPrice =
+      (10 + zillertalQuantity * zillertalPrice +
+        kleinesQuantity * kleinesPrice +
+        semmelPrice * semmelQuantity +
+        kornspitzPrice * kornspitzQuantity +
+        croissantPrice * croissantQuantity +
+        bauernbrotPrice * bauernbrotQuantity +
+        laugenstangePrice * laugenstangeQuantity +
+        esterhazyPrice * esterhazyQuantity +
+        nussschneckePrice * nussschneckeQuantity +
+        topfengolatschenPrice * topfengolatschenQuantity +
+        marmorkuchenPrice * marmorkuchenQuantity) *
+      numDays;
+  
+    setTotalPrice(calculatedTotalPrice);
+      }, [
+        zillertalQuantity,
+        kleinesQuantity,
+        semmelQuantity,
+        kornspitzQuantity,
+        croissantQuantity,
+        bauernbrotQuantity,
+        laugenstangeQuantity,
+        esterhazyQuantity,
+        nussschneckeQuantity,
+        topfengolatschenQuantity,
+        marmorkuchenQuantity,
+        dateRange, 
+      ]);
 
   const isDateSelectable = (date: Date) => {
     const now = new Date();
@@ -387,9 +299,6 @@ export default function Home() {
   }
 
 
-
-
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-f5f5dc">
       <Toaster />
@@ -400,8 +309,7 @@ export default function Home() {
             Frühstücksglocke
           </CardTitle>
           <CardDescription className="text-sm text-gray-600">
-            Bestelle dein Frühstück direkt ans Zimmer.
-          </CardDescription>
+          Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – auf Wunsch auch komplette Frühstücksvariationen – direkt vor eure Apartmenttür.          </CardDescription>
         </CardHeader>
         <CardContent>
           {confirmation ? (
@@ -593,6 +501,16 @@ export default function Home() {
                     Bitte wähle eine Zeitspanne aus.
                   </p>
                 )}
+              </div>
+
+              <div>
+                <Label>Zustellgebühr täglich</Label>
+                <Input
+                  id="deliveryFee"
+                  type="text"
+                  value="€10.00"
+                  readOnly
+                />
               </div>
 
               <div>

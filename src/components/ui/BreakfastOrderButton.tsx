@@ -113,6 +113,24 @@ const BreakfastOrderButton = ({
   zillertalPrice,
   kleinesQuantity,
   kleinesPrice,
+  semmelQuantity,
+  semmelPrice,
+  kornspitzQuantity,
+  kornspitzPrice,
+  croissantQuantity,
+  croissantPrice,
+  bauernbrotQuantity,
+  bauernbrotPrice,
+  laugenstangeQuantity,
+  laugenstangePrice,
+  esterhazyQuantity,
+  esterhazyPrice,
+  nussschneckeQuantity,
+  nussschneckePrice,
+  topfengolatschenQuantity,
+  topfengolatschenPrice,
+  marmorkuchenQuantity,
+  marmorkuchenPrice,
   totalPrice,
 }: {
   apartmentNumber: string
@@ -148,6 +166,29 @@ const BreakfastOrderButton = ({
     return date.from.getTime() <= new Date().getTime() // Vergleiche nur mit dem "from"-Datum
   }
 
+  const messageLines = [
+    'Frühstücksbestellung:',
+    `Apartment: ${apartmentNumber}`,
+    `Email: ${email}`,
+    date?.from ? `Datum: ${format(date.from, 'PPP')}` : '',
+    date?.to ? `bis ${format(date.to, 'PPP')}` : '',
+    zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : '',
+    kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : '',
+    semmelQuantity > 0 ? `Semmel: ${semmelQuantity} x €${semmelPrice}` : '',
+    kornspitzQuantity > 0 ? `Kornspitz: ${kornspitzQuantity} x €${kornspitzPrice}` : '',
+    croissantQuantity > 0 ? `Croissant: ${croissantQuantity} x €${croissantPrice}` : '',
+    bauernbrotQuantity > 0 ? `Bauernbrot: ${bauernbrotQuantity} x €${bauernbrotPrice}` : '',
+    laugenstangeQuantity > 0 ? `Laugenstange: ${laugenstangeQuantity} x €${laugenstangePrice}` : '',
+    esterhazyQuantity > 0 ? `Esterhazy: ${esterhazyQuantity} x €${esterhazyPrice}` : '',
+    nussschneckeQuantity > 0 ? `Nussschnecke: ${nussschneckeQuantity} x €${nussschneckePrice}` : '',
+    topfengolatschenQuantity > 0 ? `Topfengolatschen: ${topfengolatschenQuantity} x €${topfengolatschenPrice}` : '',
+    marmorkuchenQuantity > 0 ? `Marmorkuchen: ${marmorkuchenQuantity} x €${marmorkuchenPrice}` : '',
+    `Gesamtpreis: €${totalPrice.toFixed(2)}`
+  ];
+  
+  // Final message
+  const message = encodeURIComponent(messageLines.filter(Boolean).join('\n'));
+
   // Validierung des Formulars
   const isFormValid =
     date &&
@@ -178,6 +219,8 @@ const BreakfastOrderButton = ({
         </div>
       )}
 
+      
+
       {/* Button zum Senden der Bestellung */}
       <Button
         asChild
@@ -186,16 +229,7 @@ const BreakfastOrderButton = ({
         disabled={!isFormValid} // Button deaktiviert, wenn Formular ungültig
       >
         <a
-          href={`https://wa.me/436767011119?text=${encodeURIComponent(
-            `Frühstücksbestellung:
-            Apartment: ${apartmentNumber}
-            Email: ${email}
-            Datum: ${date?.from ? format(date.from, 'PPP') : 'Nicht angegeben'} 
-            ${date?.to ? `bis ${format(date.to, 'PPP')}` : ''}
-            ${zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : ''}
-            ${kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : ''}
-            Gesamtpreis: €${totalPrice.toFixed(2)}`
-          )}`}
+          href={`https://wa.me/436767011119?text=${message}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{ pointerEvents: isFormValid ? 'auto' : 'none' }}
