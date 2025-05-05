@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   <Card className="shadow-lg border rounded-lg">
     <CardContent className="flex items-center justify-between space-x-4">
       <div className="flex-1">
-        <h3 className="text-lg font-medium text-gray-800">{title}</h3> {/* Added title here */}
+        <h3 className="text-lg font-medium text-gray-800 mt-6">{title} (€{price})</h3> {/* Added title here */}
         <p className="text-sm text-gray-600 mt-2">{description}</p>
         <div className="flex items-center space-x-2 mt-4">
           <Button type="button" onClick={decrement} variant="outline" className="h-8 w-8">
