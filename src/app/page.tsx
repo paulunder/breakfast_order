@@ -20,8 +20,8 @@ import { de } from "date-fns/locale"
 import ProductCard from '@/components/ui/ProductCard';
 
 export default function Home() {
-  const [zillertalQuantity, setZillertalQuantity] = useState(0);
-  const [kleinesQuantity, setKleinesQuantity] = useState(0);
+  const [klzillertalQuantity, setklzillertalQuantity] = useState(0);
+  const [grzillertalQuantity, setgrzillertalQuantity] = useState(0);
   const [semmelQuantity, setSemmelQuantity] = useState(0);
   const [kornspitzQuantity, setKornspitzQuantity] = useState(0);
   const [croissantQuantity, setCroissantQuantity] = useState(0);
@@ -36,8 +36,8 @@ export default function Home() {
   const [apartmentNumber, setApartmentNumber] = useState('');
   const [confirmation, setConfirmation] = useState<any>(null);
 
-  const zillertalPrice = 15; // Price for Zillertal Frühstück
-  const kleinesPrice = 10; // Price for Kleines Frühstück
+  const klzillertalPrice = 10; // Price for Zillertal Frühstück
+  const grklzillertalPrice = 15; // Price for Kleines Frühstück
   const semmelPrice = 0.80;
   const kornspitzPrice = 1.60;
   const croissantPrice = 2.50;
@@ -73,8 +73,8 @@ export default function Home() {
   
     const numDays = extractDaysFromDateRange(dateRange).length;
     const calculatedTotalPrice =
-      (10 + zillertalQuantity * zillertalPrice +
-        kleinesQuantity * kleinesPrice +
+      (10 + klzillertalQuantity * klzillertalPrice +
+        grzillertalQuantity * grklzillertalPrice +
         semmelPrice * semmelQuantity +
         kornspitzPrice * kornspitzQuantity +
         croissantPrice * croissantQuantity +
@@ -88,8 +88,8 @@ export default function Home() {
   
     setTotalPrice(calculatedTotalPrice);
       }, [
-        zillertalQuantity,
-        kleinesQuantity,
+        klzillertalQuantity,
+        grzillertalQuantity,
         semmelQuantity,
         kornspitzQuantity,
         croissantQuantity,
@@ -143,10 +143,15 @@ export default function Home() {
       return;
     }
 
-    if (zillertalQuantity === 0 && kleinesQuantity === 0) {
+    if (klzillertalQuantity === 0 && grzillertalQuantity === 0 &&
+      semmelQuantity === 0 && kornspitzQuantity === 0 &&
+      croissantQuantity === 0 && bauernbrotQuantity === 0 &&
+      laugenstangeQuantity === 0 && esterhazyQuantity === 0 &&
+      nussschneckeQuantity === 0 && topfengolatschenQuantity === 0 &&
+      marmorkuchenQuantity === 0) {
       toast({
         title: 'Error',
-        description: 'Please select at least one breakfast.',
+        description: 'Bitte wähle irgendein Produkt aus.',
       });
       return;
     }
@@ -156,8 +161,17 @@ export default function Home() {
       toDate: dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString(),
       email,
       apartmentNumber,
-      zillertalQuantity,
-      kleinesQuantity,
+      klzillertalQuantity,
+      grzillertalQuantity,
+      semmelQuantity,
+      kornspitzQuantity,
+      croissantQuantity,
+      bauernbrotQuantity,
+      laugenstangeQuantity,
+      esterhazyQuantity,
+      nussschneckeQuantity,
+      topfengolatschenQuantity,
+      marmorkuchenQuantity,
       totalPrice,
     };
 
@@ -167,8 +181,21 @@ export default function Home() {
         to: email,
         subject: 'Frühstücksglocke - Order Confirmation',
         body: `Your order has been placed:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+          Delivery Fee: €10.00 per day
+          Date: ${format(dateRange.from, 'PPP', { locale: de })} – ${dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : ''}
+          Apartment Number: ${apartmentNumber}
+          Email: ${email}
           on ${format(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Total Price: €${totalPrice}`,
@@ -179,8 +206,21 @@ export default function Home() {
         to: 'owner@example.com',
         subject: 'Frühstücksglocke - New Order',
         body: `New order from Apartment ${apartmentNumber} for:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+          Delivery Fee: €10.00 per day
+          Date: ${format(dateRange.from, 'PPP', { locale: de })} – ${dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : ''}
+          Apartment Number: ${apartmentNumber}
+          Email: ${email}
           on ${format(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Guest email: ${email}
@@ -203,27 +243,36 @@ export default function Home() {
 
   const resetForm = () => {
     setConfirmation(null);
-    setZillertalQuantity(0);
-    setKleinesQuantity(0);
+    setklzillertalQuantity(0);
+    setgrzillertalQuantity(0);
+    setSemmelQuantity(0);
+    setKornspitzQuantity(0);
+    setCroissantQuantity(0);
+    setBauernbrotQuantity(0);
+    setLaugenstangeQuantity(0);
+    setEsterhazyQuantity(0);
+    setNussschneckeQuantity(0);
+    setTopfengolatschenQuantity(0);
+    setMarmorkuchenQuantity(0);
     setDateRange(undefined);
     setEmail('');
     setApartmentNumber('');
   };
 
   const incrementZillertal = () => {
-    setZillertalQuantity((prev) => prev + 1);
+    setklzillertalQuantity((prev) => prev + 1);
   };
 
   const decrementZillertal = () => {
-    setZillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+    setklzillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const incrementKleines = () => {
-    setKleinesQuantity((prev) => prev + 1);
+    setgrzillertalQuantity((prev) => prev + 1);
   };
 
   const decrementKleines = () => {
-    setKleinesQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+    setgrzillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const incrementSemmel = () => {
@@ -315,18 +364,71 @@ export default function Home() {
           {confirmation ? (
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-gray-800">Bestellbestätigung</h2>
-              {confirmation.zillertalQuantity > 0 && (
+
+              <h3 className="text-gray-700 font-semibold">
+                Täglich zugestellt:
+              </h3>
+              {confirmation.klzillertalQuantity > 0 && (
                 <p className="text-gray-700">
-                  Zillertal Frühstück: {confirmation.zillertalQuantity} x €{zillertalPrice}
+                  kleines Zillertaler Frühstück: {confirmation.klzillertalQuantity} x €{klzillertalPrice}
                 </p>
               )}
-              {confirmation.kleinesQuantity > 0 && (
+              {confirmation.grzillertalQuantity > 0 && (
                 <p className="text-gray-700">
-                  Kleines Frühstück: {confirmation.kleinesQuantity} x €{kleinesPrice}
+                  großes Zillertaler Frühstück: {confirmation.grzillertalQuantity} x €{grklzillertalPrice}
                 </p>
               )}
+              {confirmation.semmelQuantity > 0 && (
+                <p className="text-gray-700">
+                  Semmel: {confirmation.semmelQuantity} x €{semmelPrice}
+                </p>
+              )}
+              {confirmation.kornspitzQuantity > 0 && (
+                <p className="text-gray-700">
+                  Kornspitz: {confirmation.kornspitzQuantity} x €{kornspitzPrice}
+                </p>
+              )}
+              {confirmation.croissantQuantity > 0 && (
+                <p className="text-gray-700">
+                  Croissant: {confirmation.croissantQuantity} x €{croissantPrice}
+                </p>
+              )}
+              {confirmation.bauernbrotQuantity > 0 && (
+                <p className="text-gray-700">
+                  Bauernbrot: {confirmation.bauernbrotQuantity} x €{bauernbrotPrice}
+                </p>
+              )}
+              {confirmation.laugenstangeQuantity > 0 && (
+                <p className="text-gray-700">
+                  Laugenstange: {confirmation.laugenstangeQuantity} x €{laugenstangePrice}
+                </p>
+              )}
+              {confirmation.esterhazyQuantity > 0 && (
+                <p className="text-gray-700">
+                  Esterhazy: {confirmation.esterhazyQuantity} x €{esterhazyPrice}
+                </p>
+              )}
+              {confirmation.nussschneckeQuantity > 0 && (
+                <p className="text-gray-700">
+                  Nussschnecke: {confirmation.nussschneckeQuantity} x €{nussschneckePrice}
+                </p>
+              )}
+              {confirmation.topfengolatschenQuantity > 0 && (
+                <p className="text-gray-700">
+                  Topfengolatschen: {confirmation.topfengolatschenQuantity} x €{topfengolatschenPrice}
+                </p>
+              )}
+              {confirmation.marmorkuchenQuantity > 0 && (
+                <p className="text-gray-700">
+                  Marmorkuchen: {confirmation.marmorkuchenQuantity} x €{marmorkuchenPrice}
+                </p>
+              )}
+              <div className="border-t border-gray-300 my-4"></div>
               <p className="text-gray-700">
-                Datum: {new Date(confirmation.date).toLocaleDateString()}
+                Zustellgebühr: €10.00 pro Tag
+              </p>
+              <p className="text-gray-700">
+                Datum: {format(dateRange?.from || new Date(), 'PPP', { locale: de })} – {format(dateRange?.to || new Date(), 'PPP', { locale: de })}
               </p>
               <p className="text-gray-700">
                 Apartment Nummer: {confirmation.apartmentNumber}
@@ -335,7 +437,7 @@ export default function Home() {
                 Email: {confirmation.email}
               </p>
               <p className="text-gray-700">
-                Preis: €{confirmation.totalPrice}
+                Summe: €{confirmation.totalPrice}
               </p>
               <Button onClick={resetForm} className="bg-90ee90 text-white hover:bg-70ee70">
                 Noch etwas bestellen
@@ -344,15 +446,26 @@ export default function Home() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="apartmentNumber">Apartment Nummer</Label>
+                <Label htmlFor="apartmentNumber">Appartment Nummer</Label>
                 <Input
                   id="apartmentNumber"
-                  type="text"
+                  type="number"
                   value={apartmentNumber}
-                  onChange={(e) => setApartmentNumber(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    // Allow empty string or valid range
+                    if (value === '' || (Number(value) >= 1 && Number(value) <= 8)) {
+                      setApartmentNumber(value)
+                    }
+                  }}
                   required
-                  placeholder="Appartment Nummer"
+                  placeholder=""
+                  min={1}
+                  max={8}
                 />
+                {apartmentNumber !== '' && (Number(apartmentNumber) < 1 || Number(apartmentNumber) > 8) && (
+                  <p className="text-sm text-red-600 mt-1">Bitte eine Nummer zwischen 1 und 8 eingeben.</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -371,8 +484,8 @@ export default function Home() {
               <ProductCard
                 title="kleines Zillertaler Frühstück"
                 description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse"
-                price={zillertalPrice}
-                quantity={zillertalQuantity}
+                price={klzillertalPrice}
+                quantity={klzillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
                 increment={incrementZillertal}
                 decrement={decrementZillertal}
@@ -381,8 +494,8 @@ export default function Home() {
               <ProductCard
                 title="großes Zillertaler Frühstück"
                 description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse"
-                price={kleinesPrice}
-                quantity={kleinesQuantity}
+                price={grklzillertalPrice}
+                quantity={grzillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
                 increment={incrementKleines}
                 decrement={decrementKleines}
@@ -528,10 +641,10 @@ export default function Home() {
                 apartmentNumber={apartmentNumber}
                 email={email}
                 date={dateRange}
-                zillertalQuantity={zillertalQuantity}
-                zillertalPrice={zillertalPrice}
-                kleinesQuantity={kleinesQuantity}
-                kleinesPrice={kleinesPrice}
+                klzillertalQuantity={klzillertalQuantity}
+                klzillertalPrice={klzillertalPrice}
+                grzillertalQuantity={grzillertalQuantity}
+                grzillertalPrice={grklzillertalPrice}
                 semmelQuantity={semmelQuantity}
                 semmelPrice={semmelPrice}
                 kornspitzQuantity={kornspitzQuantity}

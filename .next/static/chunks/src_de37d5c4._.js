@@ -913,6 +913,7 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 // import { Button } from "@/components/ui/button"
 // import { format } from "date-fns"
 // import Image from "next/image"
+// import { DateRange } from "react-day-picker"
 // // Funktion zur Validierung der E-Mail
 // const isValidEmail = (email: string) =>
 //   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -920,27 +921,87 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 //   apartmentNumber,
 //   email,
 //   date,
-//   zillertalQuantity,
-//   zillertalPrice,
-//   kleinesQuantity,
-//   kleinesPrice,
+//   klzillertalQuantity,
+//   klzillertalPrice,
+//   grzillertalQuantity,
+//   grzillertalPrice,
+//   semmelQuantity,
+//   semmelPrice,
+//   kornspitzQuantity,
+//   kornspitzPrice,
+//   croissantQuantity,
+//   croissantPrice,
+//   bauernbrotQuantity,
+//   bauernbrotPrice,
+//   laugenstangeQuantity,
+//   laugenstangePrice,
+//   esterhazyQuantity,
+//   esterhazyPrice,
+//   nussschneckeQuantity,
+//   nussschneckePrice,
+//   topfengolatschenQuantity,
+//   topfengolatschenPrice,
+//   marmorkuchenQuantity,
+//   marmorkuchenPrice,
 //   totalPrice,
 // }: {
 //   apartmentNumber: string
 //   email: string
-//   date: Date | undefined
-//   zillertalQuantity: number
-//   zillertalPrice: number
-//   kleinesQuantity: number
-//   kleinesPrice: number
+//   date: DateRange | undefined
+//   klzillertalQuantity: number
+//   klzillertalPrice: number
+//   grzillertalQuantity: number
+//   grzillertalPrice: number
+//   semmelQuantity: number
+//   semmelPrice: number
+//   kornspitzQuantity: number
+//   kornspitzPrice: number
+//   croissantQuantity: number
+//   croissantPrice: number
+//   bauernbrotQuantity: number
+//   bauernbrotPrice: number
+//   laugenstangeQuantity: number
+//   laugenstangePrice: number
+//   esterhazyQuantity: number
+//   esterhazyPrice: number
+//   nussschneckeQuantity: number
+//   nussschneckePrice: number
+//   topfengolatschenQuantity: number
+//   topfengolatschenPrice: number
+//   marmorkuchenQuantity: number
+//   marmorkuchenPrice: number
 //   totalPrice: number
 // }) => {
-//   const isDateDisabled = (date: Date | undefined) => {
-//     if (!date) return true
-//     return date.getTime() <= new Date().getTime()
+//   // Funktion zur Überprüfung, ob das Datum in der Vergangenheit liegt
+//   const isDateDisabled = (date: DateRange | undefined) => {
+//     if (!date || !date.from) return true
+//     return date.from.getTime() <= new Date().getTime() // Vergleiche nur mit dem "from"-Datum
 //   }
+//   const messageLines = [
+//     'Frühstücksbestellung:',
+//     `Apartment: ${apartmentNumber}`,
+//     `Email: ${email}`,
+//     date?.from ? `Datum: ${format(date.from, 'PPP')}` : '',
+//     date?.to ? `bis ${format(date.to, 'PPP')}` : '',
+//     klzillertalQuantity > 0 ? `Zillertal Frühstück: ${klzillertalQuantity} x €${klzillertalPrice}` : '',
+//     grzillertalQuantity > 0 ? `Kleines Frühstück: ${grzillertalQuantity} x €${grzillertalPrice}` : '',
+//     semmelQuantity > 0 ? `Semmel: ${semmelQuantity} x €${semmelPrice}` : '',
+//     kornspitzQuantity > 0 ? `Kornspitz: ${kornspitzQuantity} x €${kornspitzPrice}` : '',
+//     croissantQuantity > 0 ? `Croissant: ${croissantQuantity} x €${croissantPrice}` : '',
+//     bauernbrotQuantity > 0 ? `Bauernbrot: ${bauernbrotQuantity} x €${bauernbrotPrice}` : '',
+//     laugenstangeQuantity > 0 ? `Laugenstange: ${laugenstangeQuantity} x €${laugenstangePrice}` : '',
+//     esterhazyQuantity > 0 ? `Esterhazy: ${esterhazyQuantity} x €${esterhazyPrice}` : '',
+//     nussschneckeQuantity > 0 ? `Nussschnecke: ${nussschneckeQuantity} x €${nussschneckePrice}` : '',
+//     topfengolatschenQuantity > 0 ? `Topfengolatschen: ${topfengolatschenQuantity} x €${topfengolatschenPrice}` : '',
+//     marmorkuchenQuantity > 0 ? `Marmorkuchen: ${marmorkuchenQuantity} x €${marmorkuchenPrice}` : '',
+//     `Gesamtpreis: €${totalPrice.toFixed(2)}`
+//   ];
+//   // Final message
+//   const message = encodeURIComponent(messageLines.filter(Boolean).join('\n'));
+//   // Validierung des Formulars
 //   const isFormValid =
 //     date &&
+//     date.from &&
 //     !isDateDisabled(date) &&
 //     apartmentNumber &&
 //     email &&
@@ -948,10 +1009,12 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 //   return (
 //     <div>
 //       {/* Fehlermeldung, wenn ein Feld nicht ausgefüllt ist */}
-//       {(!date || isDateDisabled(date) || !apartmentNumber || !email || !isValidEmail(email)) && (
+//       {(!date || !date.from || isDateDisabled(date) || !apartmentNumber || !email || !isValidEmail(email)) && (
 //         <div className="text-sm text-red-600 mt-2 bg-red-100 p-2 rounded">
 //           {!date
 //             ? "Bitte ein Datum auswählen."
+//             : !date.from
+//             ? "Bitte ein Startdatum auswählen."
 //             : isDateDisabled(date)
 //             ? "Das gewählte Datum liegt in der Vergangenheit."
 //             : !apartmentNumber
@@ -971,15 +1034,7 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 //         disabled={!isFormValid} // Button deaktiviert, wenn Formular ungültig
 //       >
 //         <a
-//           href={`https://wa.me/436767011119?text=${encodeURIComponent(
-//             `Frühstücksbestellung:
-//             Apartment: ${apartmentNumber}
-//             Email: ${email}
-//             Datum: ${date ? format(date, 'PPP') : 'Nicht angegeben'}
-//             ${zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : ''}
-//             ${kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : ''}
-//             Gesamtpreis: €${totalPrice.toFixed(2)}`
-//           )}`}
+//           href={`https://wa.me/436767011119?text=${message}`}
 //           target="_blank"
 //           rel="noopener noreferrer"
 //           style={{ pointerEvents: isFormValid ? 'auto' : 'none' }}
@@ -1005,92 +1060,105 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/button.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/date-fns/format.mjs [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
+"use client";
 ;
 ;
 ;
 ;
-// Funktion zur Validierung der E-Mail
 const isValidEmail = (email)=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const BreakfastOrderButton = ({ apartmentNumber, email, date, zillertalQuantity, zillertalPrice, kleinesQuantity, kleinesPrice, semmelQuantity, semmelPrice, kornspitzQuantity, kornspitzPrice, croissantQuantity, croissantPrice, bauernbrotQuantity, bauernbrotPrice, laugenstangeQuantity, laugenstangePrice, esterhazyQuantity, esterhazyPrice, nussschneckeQuantity, nussschneckePrice, topfengolatschenQuantity, topfengolatschenPrice, marmorkuchenQuantity, marmorkuchenPrice, totalPrice })=>{
-    // Funktion zur Überprüfung, ob das Datum in der Vergangenheit liegt
+const BreakfastOrderButton = (props)=>{
+    const { apartmentNumber, email, date, klzillertalQuantity, klzillertalPrice, grzillertalQuantity, grzillertalPrice, semmelQuantity, semmelPrice, kornspitzQuantity, kornspitzPrice, croissantQuantity, croissantPrice, bauernbrotQuantity, bauernbrotPrice, laugenstangeQuantity, laugenstangePrice, esterhazyQuantity, esterhazyPrice, nussschneckeQuantity, nussschneckePrice, topfengolatschenQuantity, topfengolatschenPrice, marmorkuchenQuantity, marmorkuchenPrice, totalPrice } = props;
     const isDateDisabled = (date)=>{
         if (!date || !date.from) return true;
-        return date.from.getTime() <= new Date().getTime() // Vergleiche nur mit dem "from"-Datum
-        ;
+        const now = new Date();
+        now.setHours(16, 0, 0, 0);
+        return date.from.getTime() < now.getTime();
     };
+    const isFormValid = date?.from && !isDateDisabled(date) && apartmentNumber.trim() !== '' && isValidEmail(email);
+    const formatLine = (label, quantity, price)=>quantity > 0 ? `${label}: ${quantity} x €${price.toFixed(2)}` : '';
     const messageLines = [
-        'Frühstücksbestellung:',
+        `Frühstücksbestellung`,
         `Apartment: ${apartmentNumber}`,
         `Email: ${email}`,
         date?.from ? `Datum: ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(date.from, 'PPP')}` : '',
         date?.to ? `bis ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(date.to, 'PPP')}` : '',
-        zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : '',
-        kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : '',
-        semmelQuantity > 0 ? `Semmel: ${semmelQuantity} x €${semmelPrice}` : '',
-        kornspitzQuantity > 0 ? `Kornspitz: ${kornspitzQuantity} x €${kornspitzPrice}` : '',
-        croissantQuantity > 0 ? `Croissant: ${croissantQuantity} x €${croissantPrice}` : '',
-        bauernbrotQuantity > 0 ? `Bauernbrot: ${bauernbrotQuantity} x €${bauernbrotPrice}` : '',
-        laugenstangeQuantity > 0 ? `Laugenstange: ${laugenstangeQuantity} x €${laugenstangePrice}` : '',
-        esterhazyQuantity > 0 ? `Esterhazy: ${esterhazyQuantity} x €${esterhazyPrice}` : '',
-        nussschneckeQuantity > 0 ? `Nussschnecke: ${nussschneckeQuantity} x €${nussschneckePrice}` : '',
-        topfengolatschenQuantity > 0 ? `Topfengolatschen: ${topfengolatschenQuantity} x €${topfengolatschenPrice}` : '',
-        marmorkuchenQuantity > 0 ? `Marmorkuchen: ${marmorkuchenQuantity} x €${marmorkuchenPrice}` : '',
+        '',
+        formatLine('Zillertal Frühstück', klzillertalQuantity, klzillertalPrice),
+        formatLine('Kleines Frühstück', grzillertalQuantity, grzillertalPrice),
+        formatLine('Semmel', semmelQuantity, semmelPrice),
+        formatLine('Kornspitz', kornspitzQuantity, kornspitzPrice),
+        formatLine('Croissant', croissantQuantity, croissantPrice),
+        formatLine('Bauernbrot', bauernbrotQuantity, bauernbrotPrice),
+        formatLine('Laugenstange', laugenstangeQuantity, laugenstangePrice),
+        formatLine('Esterhazy', esterhazyQuantity, esterhazyPrice),
+        formatLine('Nussschnecke', nussschneckeQuantity, nussschneckePrice),
+        formatLine('Topfengolatschen', topfengolatschenQuantity, topfengolatschenPrice),
+        formatLine('Marmorkuchen', marmorkuchenQuantity, marmorkuchenPrice),
+        '',
         `Gesamtpreis: €${totalPrice.toFixed(2)}`
-    ];
-    // Final message
-    const message = encodeURIComponent(messageLines.filter(Boolean).join('\n'));
-    // Validierung des Formulars
-    const isFormValid = date && date.from && !isDateDisabled(date) && apartmentNumber && email && isValidEmail(email);
+    ].filter(Boolean).join('\n');
+    const handleOrderSubmission = async ()=>{
+        try {
+            const res = await fetch('/api/send-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: email,
+                    subject: 'Ihre Frühstücksbestellung',
+                    text: messageLines
+                })
+            });
+            if (res.ok) {
+                alert('Bestellung erfolgreich gesendet!');
+            } else {
+                const data = await res.json();
+                alert(`Fehler beim Senden: ${data.message}`);
+            }
+        } catch (error) {
+            alert('Netzwerkfehler beim Senden der Bestellung.');
+            console.error(error);
+        }
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: [
-            (!date || !date.from || isDateDisabled(date) || !apartmentNumber || !email || !isValidEmail(email)) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            !isFormValid && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "text-sm text-red-600 mt-2 bg-red-100 p-2 rounded",
-                children: !date ? "Bitte ein Datum auswählen." : !date.from ? "Bitte ein Startdatum auswählen." : isDateDisabled(date) ? "Das gewählte Datum liegt in der Vergangenheit." : !apartmentNumber ? "Bitte die Apartment-Nummer eingeben." : !email ? "Bitte die E-Mail-Adresse eingeben." : !isValidEmail(email) ? "Die E-Mail-Adresse ist ungültig." : null
+                children: !date ? "Bitte ein Datum auswählen." : !date.from ? "Bitte ein Startdatum auswählen." : isDateDisabled(date) ? "Das gewählte Datum liegt in der Vergangenheit oder ist nach 16 Uhr." : !apartmentNumber ? "Bitte die Apartment-Nummer eingeben." : !email ? "Bitte die E-Mail-Adresse eingeben." : !isValidEmail(email) ? "Die E-Mail-Adresse ist ungültig." : null
             }, void 0, false, {
                 fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
-                lineNumber: 205,
+                lineNumber: 291,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                asChild: true,
                 variant: "outline",
                 className: "w-full mt-2 border-green-600 text-green-700 hover:bg-green-50",
                 disabled: !isFormValid,
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                    href: `https://wa.me/436767011119?text=${message}`,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    style: {
-                        pointerEvents: isFormValid ? 'auto' : 'none'
-                    },
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                            src: "/images/whatsapp_green.png",
-                            alt: "WhatsApp Logo",
-                            width: 20,
-                            height: 20,
-                            className: "inline-block mr-2"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
-                            lineNumber: 237,
-                            columnNumber: 11
-                        }, this),
-                        "Bestellung senden"
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
-                    lineNumber: 231,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
+                onClick: handleOrderSubmission,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                        src: "/images/email_icon.png",
+                        alt: "E-Mail Logo",
+                        width: 20,
+                        height: 20,
+                        className: "inline-block mr-2"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
+                        lineNumber: 313,
+                        columnNumber: 9
+                    }, this),
+                    "Bestellung senden"
+                ]
+            }, void 0, true, {
                 fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
-                lineNumber: 225,
+                lineNumber: 307,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/ui/BreakfastOrderButton.tsx",
-        lineNumber: 202,
+        lineNumber: 289,
         columnNumber: 5
     }, this);
 };
@@ -1334,8 +1402,8 @@ var _s = __turbopack_context__.k.signature();
 ;
 function Home() {
     _s();
-    const [zillertalQuantity, setZillertalQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
-    const [kleinesQuantity, setKleinesQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [klzillertalQuantity, setklzillertalQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [grzillertalQuantity, setgrzillertalQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [semmelQuantity, setSemmelQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [kornspitzQuantity, setKornspitzQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [croissantQuantity, setCroissantQuantity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
@@ -1349,8 +1417,8 @@ function Home() {
     const [email, setEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [apartmentNumber, setApartmentNumber] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [confirmation, setConfirmation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const zillertalPrice = 15; // Price for Zillertal Frühstück
-    const kleinesPrice = 10; // Price for Kleines Frühstück
+    const klzillertalPrice = 10; // Price for Zillertal Frühstück
+    const grklzillertalPrice = 15; // Price for Kleines Frühstück
     const semmelPrice = 0.80;
     const kornspitzPrice = 1.60;
     const croissantPrice = 2.50;
@@ -1379,12 +1447,12 @@ function Home() {
                 return;
             }
             const numDays = extractDaysFromDateRange(dateRange).length;
-            const calculatedTotalPrice = (10 + zillertalQuantity * zillertalPrice + kleinesQuantity * kleinesPrice + semmelPrice * semmelQuantity + kornspitzPrice * kornspitzQuantity + croissantPrice * croissantQuantity + bauernbrotPrice * bauernbrotQuantity + laugenstangePrice * laugenstangeQuantity + esterhazyPrice * esterhazyQuantity + nussschneckePrice * nussschneckeQuantity + topfengolatschenPrice * topfengolatschenQuantity + marmorkuchenPrice * marmorkuchenQuantity) * numDays;
+            const calculatedTotalPrice = (10 + klzillertalQuantity * klzillertalPrice + grzillertalQuantity * grklzillertalPrice + semmelPrice * semmelQuantity + kornspitzPrice * kornspitzQuantity + croissantPrice * croissantQuantity + bauernbrotPrice * bauernbrotQuantity + laugenstangePrice * laugenstangeQuantity + esterhazyPrice * esterhazyQuantity + nussschneckePrice * nussschneckeQuantity + topfengolatschenPrice * topfengolatschenQuantity + marmorkuchenPrice * marmorkuchenQuantity) * numDays;
             setTotalPrice(calculatedTotalPrice);
         }
     }["Home.useEffect"], [
-        zillertalQuantity,
-        kleinesQuantity,
+        klzillertalQuantity,
+        grzillertalQuantity,
         semmelQuantity,
         kornspitzQuantity,
         croissantQuantity,
@@ -1426,10 +1494,10 @@ function Home() {
             });
             return;
         }
-        if (zillertalQuantity === 0 && kleinesQuantity === 0) {
+        if (klzillertalQuantity === 0 && grzillertalQuantity === 0 && semmelQuantity === 0 && kornspitzQuantity === 0 && croissantQuantity === 0 && bauernbrotQuantity === 0 && laugenstangeQuantity === 0 && esterhazyQuantity === 0 && nussschneckeQuantity === 0 && topfengolatschenQuantity === 0 && marmorkuchenQuantity === 0) {
             (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"])({
                 title: 'Error',
-                description: 'Please select at least one breakfast.'
+                description: 'Bitte wähle irgendein Produkt aus.'
             });
             return;
         }
@@ -1438,8 +1506,17 @@ function Home() {
             toDate: dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString(),
             email,
             apartmentNumber,
-            zillertalQuantity,
-            kleinesQuantity,
+            klzillertalQuantity,
+            grzillertalQuantity,
+            semmelQuantity,
+            kornspitzQuantity,
+            croissantQuantity,
+            bauernbrotQuantity,
+            laugenstangeQuantity,
+            esterhazyQuantity,
+            nussschneckeQuantity,
+            topfengolatschenQuantity,
+            marmorkuchenQuantity,
             totalPrice
         };
         try {
@@ -1448,8 +1525,25 @@ function Home() {
                 to: email,
                 subject: 'Frühstücksglocke - Order Confirmation',
                 body: `Your order has been placed:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+          Delivery Fee: €10.00 per day
+          Date: ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.from, 'PPP', {
+                    locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                })} – ${dateRange.to ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.to, 'PPP', {
+                    locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                }) : ''}
+          Apartment Number: ${apartmentNumber}
+          Email: ${email}
           on ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.to, 'PPP')}` : ''}
           Total Price: €${totalPrice}`
@@ -1459,8 +1553,25 @@ function Home() {
                 to: 'owner@example.com',
                 subject: 'Frühstücksglocke - New Order',
                 body: `New order from Apartment ${apartmentNumber} for:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+          Delivery Fee: €10.00 per day
+          Date: ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.from, 'PPP', {
+                    locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                })} – ${dateRange.to ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.to, 'PPP', {
+                    locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                }) : ''}
+          Apartment Number: ${apartmentNumber}
+          Email: ${email}
           on ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange.to, 'PPP')}` : ''}
           Guest email: ${email}
@@ -1480,23 +1591,32 @@ function Home() {
     };
     const resetForm = ()=>{
         setConfirmation(null);
-        setZillertalQuantity(0);
-        setKleinesQuantity(0);
+        setklzillertalQuantity(0);
+        setgrzillertalQuantity(0);
+        setSemmelQuantity(0);
+        setKornspitzQuantity(0);
+        setCroissantQuantity(0);
+        setBauernbrotQuantity(0);
+        setLaugenstangeQuantity(0);
+        setEsterhazyQuantity(0);
+        setNussschneckeQuantity(0);
+        setTopfengolatschenQuantity(0);
+        setMarmorkuchenQuantity(0);
         setDateRange(undefined);
         setEmail('');
         setApartmentNumber('');
     };
     const incrementZillertal = ()=>{
-        setZillertalQuantity((prev)=>prev + 1);
+        setklzillertalQuantity((prev)=>prev + 1);
     };
     const decrementZillertal = ()=>{
-        setZillertalQuantity((prev)=>prev > 0 ? prev - 1 : 0);
+        setklzillertalQuantity((prev)=>prev > 0 ? prev - 1 : 0);
     };
     const incrementKleines = ()=>{
-        setKleinesQuantity((prev)=>prev + 1);
+        setgrzillertalQuantity((prev)=>prev + 1);
     };
     const decrementKleines = ()=>{
-        setKleinesQuantity((prev)=>prev > 0 ? prev - 1 : 0);
+        setgrzillertalQuantity((prev)=>prev > 0 ? prev - 1 : 0);
     };
     const incrementSemmel = ()=>{
         setSemmelQuantity((prev)=>prev + 1);
@@ -1568,7 +1688,7 @@ function Home() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$toaster$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Toaster"], {}, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 304,
+                lineNumber: 353,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1583,14 +1703,14 @@ function Home() {
                                         className: "mr-2 h-6 w-6"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/page.tsx",
-                                        lineNumber: 308,
+                                        lineNumber: 357,
                                         columnNumber: 13
                                     }, this),
                                     "Frühstücksglocke"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 307,
+                                lineNumber: 356,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -1598,13 +1718,13 @@ function Home() {
                                 children: "Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – auf Wunsch auch komplette Frühstücksvariationen – direkt vor eure Apartmenttür.          "
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 311,
+                                lineNumber: 360,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 306,
+                        lineNumber: 355,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1616,44 +1736,190 @@ function Home() {
                                     children: "Bestellbestätigung"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 317,
+                                    lineNumber: 366,
                                     columnNumber: 15
                                 }, this),
-                                confirmation.zillertalQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                    className: "text-gray-700 font-semibold",
+                                    children: "Täglich zugestellt:"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 368,
+                                    columnNumber: 15
+                                }, this),
+                                confirmation.klzillertalQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-gray-700",
                                     children: [
-                                        "Zillertal Frühstück: ",
-                                        confirmation.zillertalQuantity,
+                                        "kleines Zillertaler Frühstück: ",
+                                        confirmation.klzillertalQuantity,
                                         " x €",
-                                        zillertalPrice
+                                        klzillertalPrice
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 319,
+                                    lineNumber: 372,
                                     columnNumber: 17
                                 }, this),
-                                confirmation.kleinesQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                confirmation.grzillertalQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-gray-700",
                                     children: [
-                                        "Kleines Frühstück: ",
-                                        confirmation.kleinesQuantity,
+                                        "großes Zillertaler Frühstück: ",
+                                        confirmation.grzillertalQuantity,
                                         " x €",
-                                        kleinesPrice
+                                        grklzillertalPrice
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 324,
+                                    lineNumber: 377,
                                     columnNumber: 17
+                                }, this),
+                                confirmation.semmelQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Semmel: ",
+                                        confirmation.semmelQuantity,
+                                        " x €",
+                                        semmelPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 382,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.kornspitzQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Kornspitz: ",
+                                        confirmation.kornspitzQuantity,
+                                        " x €",
+                                        kornspitzPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 387,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.croissantQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Croissant: ",
+                                        confirmation.croissantQuantity,
+                                        " x €",
+                                        croissantPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 392,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.bauernbrotQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Bauernbrot: ",
+                                        confirmation.bauernbrotQuantity,
+                                        " x €",
+                                        bauernbrotPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 397,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.laugenstangeQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Laugenstange: ",
+                                        confirmation.laugenstangeQuantity,
+                                        " x €",
+                                        laugenstangePrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 402,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.esterhazyQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Esterhazy: ",
+                                        confirmation.esterhazyQuantity,
+                                        " x €",
+                                        esterhazyPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 407,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.nussschneckeQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Nussschnecke: ",
+                                        confirmation.nussschneckeQuantity,
+                                        " x €",
+                                        nussschneckePrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 412,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.topfengolatschenQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Topfengolatschen: ",
+                                        confirmation.topfengolatschenQuantity,
+                                        " x €",
+                                        topfengolatschenPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 417,
+                                    columnNumber: 17
+                                }, this),
+                                confirmation.marmorkuchenQuantity > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: [
+                                        "Marmorkuchen: ",
+                                        confirmation.marmorkuchenQuantity,
+                                        " x €",
+                                        marmorkuchenPrice
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 422,
+                                    columnNumber: 17
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "border-t border-gray-300 my-4"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 426,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-gray-700",
+                                    children: "Zustellgebühr: €10.00 pro Tag"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/page.tsx",
+                                    lineNumber: 427,
+                                    columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-gray-700",
                                     children: [
                                         "Datum: ",
-                                        new Date(confirmation.date).toLocaleDateString()
+                                        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange?.from || new Date(), 'PPP', {
+                                            locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                                        }),
+                                        " – ",
+                                        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(dateRange?.to || new Date(), 'PPP', {
+                                            locale: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$locale$2f$de$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["de"]
+                                        })
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 328,
+                                    lineNumber: 430,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1664,7 +1930,7 @@ function Home() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 331,
+                                    lineNumber: 433,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1675,18 +1941,18 @@ function Home() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 334,
+                                    lineNumber: 436,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-gray-700",
                                     children: [
-                                        "Preis: €",
+                                        "Summe: €",
                                         confirmation.totalPrice
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 337,
+                                    lineNumber: 439,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1695,13 +1961,13 @@ function Home() {
                                     children: "Noch etwas bestellen"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 340,
+                                    lineNumber: 442,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 316,
+                            lineNumber: 365,
                             columnNumber: 13
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                             onSubmit: handleSubmit,
@@ -1711,28 +1977,44 @@ function Home() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Label"], {
                                             htmlFor: "apartmentNumber",
-                                            children: "Apartment Nummer"
+                                            children: "Appartment Nummer"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 347,
+                                            lineNumber: 449,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                             id: "apartmentNumber",
-                                            type: "text",
+                                            type: "number",
                                             value: apartmentNumber,
-                                            onChange: (e)=>setApartmentNumber(e.target.value),
+                                            onChange: (e)=>{
+                                                const value = e.target.value;
+                                                // Allow empty string or valid range
+                                                if (value === '' || Number(value) >= 1 && Number(value) <= 8) {
+                                                    setApartmentNumber(value);
+                                                }
+                                            },
                                             required: true,
-                                            placeholder: "Appartment Nummer"
+                                            placeholder: "",
+                                            min: 1,
+                                            max: 8
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 348,
+                                            lineNumber: 450,
                                             columnNumber: 17
+                                        }, this),
+                                        apartmentNumber !== '' && (Number(apartmentNumber) < 1 || Number(apartmentNumber) > 8) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-sm text-red-600 mt-1",
+                                            children: "Bitte eine Nummer zwischen 1 und 8 eingeben."
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/page.tsx",
+                                            lineNumber: 467,
+                                            columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 346,
+                                    lineNumber: 448,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1742,7 +2024,7 @@ function Home() {
                                             children: "Email"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 358,
+                                            lineNumber: 471,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1754,13 +2036,13 @@ function Home() {
                                             placeholder: "guest@example.com"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 359,
+                                            lineNumber: 472,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 357,
+                                    lineNumber: 470,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1768,40 +2050,40 @@ function Home() {
                                     children: "Frühstücksservice"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 369,
+                                    lineNumber: 482,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                     title: "kleines Zillertaler Frühstück",
                                     description: "Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse",
-                                    price: zillertalPrice,
-                                    quantity: zillertalQuantity,
+                                    price: klzillertalPrice,
+                                    quantity: klzillertalQuantity,
                                     imageUrl: "https://picsum.photos/200/150",
                                     increment: incrementZillertal,
                                     decrement: decrementZillertal
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 371,
+                                    lineNumber: 484,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                     title: "großes Zillertaler Frühstück",
                                     description: "Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse",
-                                    price: kleinesPrice,
-                                    quantity: kleinesQuantity,
+                                    price: grklzillertalPrice,
+                                    quantity: grzillertalQuantity,
                                     imageUrl: "https://picsum.photos/200/150",
                                     increment: incrementKleines,
                                     decrement: decrementKleines
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 381,
+                                    lineNumber: 494,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "border-t border-gray-300 my-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 391,
+                                    lineNumber: 504,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1809,7 +2091,7 @@ function Home() {
                                     children: "Brötchenservice"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 392,
+                                    lineNumber: 505,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1822,7 +2104,7 @@ function Home() {
                                     decrement: decrementSemmel
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 394,
+                                    lineNumber: 507,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1835,7 +2117,7 @@ function Home() {
                                     decrement: decrementKornspitz
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 404,
+                                    lineNumber: 517,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1848,7 +2130,7 @@ function Home() {
                                     decrement: decrementCroissant
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 414,
+                                    lineNumber: 527,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1861,7 +2143,7 @@ function Home() {
                                     decrement: decrementBauernbrot
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 424,
+                                    lineNumber: 537,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1874,14 +2156,14 @@ function Home() {
                                     decrement: decrementLaugenstange
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 434,
+                                    lineNumber: 547,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "border-t border-gray-300 my-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 444,
+                                    lineNumber: 557,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1889,7 +2171,7 @@ function Home() {
                                     children: "Süßes"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 445,
+                                    lineNumber: 558,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1902,7 +2184,7 @@ function Home() {
                                     decrement: decrementEsterhazy
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 447,
+                                    lineNumber: 560,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1915,7 +2197,7 @@ function Home() {
                                     decrement: decrementNussschnecke
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 457,
+                                    lineNumber: 570,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1928,7 +2210,7 @@ function Home() {
                                     decrement: decrementTopfengolatschen
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 467,
+                                    lineNumber: 580,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$ProductCard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1941,7 +2223,7 @@ function Home() {
                                     decrement: decrementMarmorkuchen
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 477,
+                                    lineNumber: 590,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1950,7 +2232,7 @@ function Home() {
                                             children: "Datum"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 488,
+                                            lineNumber: 601,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$calendar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Calendar"], {
@@ -1960,7 +2242,7 @@ function Home() {
                                             className: "rounded-md border bg-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 489,
+                                            lineNumber: 602,
                                             columnNumber: 17
                                         }, this),
                                         dateRange?.from && dateRange?.to ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1976,20 +2258,20 @@ function Home() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 496,
+                                            lineNumber: 609,
                                             columnNumber: 19
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "mt-2 text-sm text-muted-foreground",
                                             children: "Bitte wähle eine Zeitspanne aus."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 500,
+                                            lineNumber: 613,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 487,
+                                    lineNumber: 600,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1998,7 +2280,7 @@ function Home() {
                                             children: "Zustellgebühr täglich"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 507,
+                                            lineNumber: 620,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -2008,13 +2290,13 @@ function Home() {
                                             readOnly: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 508,
+                                            lineNumber: 621,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 506,
+                                    lineNumber: 619,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2024,7 +2306,7 @@ function Home() {
                                             children: "Summe"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 517,
+                                            lineNumber: 630,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -2034,23 +2316,23 @@ function Home() {
                                             readOnly: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 518,
+                                            lineNumber: 631,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 516,
+                                    lineNumber: 629,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$BreakfastOrderButton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                     apartmentNumber: apartmentNumber,
                                     email: email,
                                     date: dateRange,
-                                    zillertalQuantity: zillertalQuantity,
-                                    zillertalPrice: zillertalPrice,
-                                    kleinesQuantity: kleinesQuantity,
-                                    kleinesPrice: kleinesPrice,
+                                    klzillertalQuantity: klzillertalQuantity,
+                                    klzillertalPrice: klzillertalPrice,
+                                    grzillertalQuantity: grzillertalQuantity,
+                                    grzillertalPrice: grklzillertalPrice,
                                     semmelQuantity: semmelQuantity,
                                     semmelPrice: semmelPrice,
                                     kornspitzQuantity: kornspitzQuantity,
@@ -2072,34 +2354,34 @@ function Home() {
                                     totalPrice: totalPrice
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 527,
+                                    lineNumber: 640,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 345,
+                            lineNumber: 447,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 314,
+                        lineNumber: 363,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 305,
+                lineNumber: 354,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 303,
+        lineNumber: 352,
         columnNumber: 5
     }, this);
 }
-_s(Home, "MoOo2/J1uxUSsRNjhk8u0OlBX7w=");
+_s(Home, "FxxAzQ+jLsq/RdKoq7E4+4HbnPc=");
 _c = Home;
 var _c;
 __turbopack_context__.k.register(_c, "Home");
