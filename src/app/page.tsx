@@ -129,7 +129,7 @@ export default function Home() {
     }
 
     const now = new Date();
-    const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
+    const sixteenHoursToday = setHours(setMinutes(setSeconds(new Date(), 0), 0), 16);
 
     // Check if the selected start date is today and after 4 PM
     if (
