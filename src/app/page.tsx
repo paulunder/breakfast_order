@@ -119,7 +119,7 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!dateRange?.from) {
       toast({
         title: 'Error',
@@ -127,10 +127,15 @@ export default function Home() {
       });
       return;
     }
-
+  
+    if (typeof window === 'undefined') {
+      // Serverseitig kein Datum vergleichen
+      return;
+    }
+  
     const now = new Date();
     const sixteenHoursToday = setHours(setMinutes(setSeconds(new Date(), 0), 0), 16);
-
+  
     // Check if the selected start date is today and after 4 PM
     if (
       isToday(dateRange.from) &&
@@ -142,7 +147,7 @@ export default function Home() {
       });
       return;
     }
-
+    
     if (klzillertalQuantity === 0 && grzillertalQuantity === 0 &&
       semmelQuantity === 0 && kornspitzQuantity === 0 &&
       croissantQuantity === 0 && bauernbrotQuantity === 0 &&
