@@ -261,6 +261,13 @@ const BreakfastOrderButton: React.FC<Props> = (props) => {
     `Gesamtpreis: €${totalPrice.toFixed(2)}`,
   ].filter(Boolean).join('\n')
 
+  const handleWhatsAppOrder = () => {
+    const message = encodeURIComponent(messageLines)
+    const phoneNumber = '436767011119' // ohne + am Anfang
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`
+    window.open(whatsappURL, '_blank')
+  }
+
   const handleOrderSubmission = async () => {
     try {
       const res = await fetch('/api/send-order', {
@@ -308,7 +315,7 @@ const BreakfastOrderButton: React.FC<Props> = (props) => {
         variant="outline"
         className="w-full mt-2 border-green-600 text-green-700 hover:bg-green-50"
         disabled={!isFormValid}
-        onClick={handleOrderSubmission}
+        onClick={handleWhatsAppOrder}
       >
         {/* <Image
           src="/images/email_icon.png"

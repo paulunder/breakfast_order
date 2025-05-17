@@ -182,78 +182,130 @@ export default function Home() {
       totalPrice,
     };
   
+    // try {
+    //   // For display in emails, format the dates client-side only
+    //   let formattedFromDate = '';
+    //   let formattedToDate = '';
+      
+    //   if (typeof window !== 'undefined') {
+    //     // Client-side only formatting with the locale
+    //     formattedFromDate = format(dateRange.from, 'PPP', { locale: de });
+    //     formattedToDate = dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : '';
+    //   } else {
+    //     // Server-side fallback that won't be visible to users
+    //     formattedFromDate = formatDateConsistently(dateRange.from);
+    //     formattedToDate = formatDateConsistently(dateRange.to);
+    //   }
+  
+    //   // Guest email
+    //   await sendEmail({
+    //     to: email,
+    //     subject: 'Frühstücksglocke - Order Confirmation',
+    //     body: `Your order has been placed:
+    //       ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+    //       ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+    //       ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+    //       ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+    //       ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+    //       ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+    //       ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+    //       ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+    //       ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+    //       ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+    //       ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+    //       Delivery Fee: €10.00 per day
+    //       Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
+    //       Apartment Number: ${apartmentNumber}
+    //       Email: ${email}
+    //       Total Price: €${totalPrice}`,
+    //   });
+  
+    //   // Owner email
+    //   await sendEmail({
+    //     to: 'owner@example.com',
+    //     subject: 'Frühstücksglocke - New Order',
+    //     body: `New order from Apartment ${apartmentNumber} for:
+    //       ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
+    //       ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
+    //       ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
+    //       ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
+    //       ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
+    //       ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
+    //       ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
+    //       ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
+    //       ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
+    //       ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
+    //       ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
+    //       Delivery Fee: €10.00 per day
+    //       Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
+    //       Apartment Number: ${apartmentNumber}
+    //       Email: ${email}
+    //       Guest email: ${email}
+    //       Total Price: €${totalPrice}`,
+    //   });
+  
+    //   setConfirmation(orderDetails);
+  
+    //   toast({
+    //     title: 'Success',
+    //     description: 'Order placed successfully! Confirmation sent to your email.',
+    //   });
+    // } 
+
     try {
-      // For display in emails, format the dates client-side only
       let formattedFromDate = '';
       let formattedToDate = '';
-      
+    
       if (typeof window !== 'undefined') {
-        // Client-side only formatting with the locale
         formattedFromDate = format(dateRange.from, 'PPP', { locale: de });
         formattedToDate = dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : '';
       } else {
-        // Server-side fallback that won't be visible to users
         formattedFromDate = formatDateConsistently(dateRange.from);
         formattedToDate = formatDateConsistently(dateRange.to);
       }
-  
-      // Guest email
-      await sendEmail({
-        to: email,
-        subject: 'Frühstücksglocke - Order Confirmation',
-        body: `Your order has been placed:
-          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
-          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
-          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
-          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
-          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
-          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
-          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
-          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
-          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
-          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
-          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
-          Delivery Fee: €10.00 per day
-          Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
-          Apartment Number: ${apartmentNumber}
-          Email: ${email}
-          Total Price: €${totalPrice}`,
-      });
-  
-      // Owner email
-      await sendEmail({
-        to: 'owner@example.com',
-        subject: 'Frühstücksglocke - New Order',
-        body: `New order from Apartment ${apartmentNumber} for:
-          ${klzillertalQuantity > 0 ? `${klzillertalQuantity} x Zillertal Frühstück (€${klzillertalPrice})` : ''}
-          ${grzillertalQuantity > 0 ? `${grzillertalQuantity} x Kleines Frühstück (€${grklzillertalPrice})` : ''}
-          ${semmelQuantity > 0 ? `${semmelQuantity} x Semmel (€${semmelPrice})` : ''}
-          ${kornspitzQuantity > 0 ? `${kornspitzQuantity} x Kornspitz (€${kornspitzPrice})` : ''}
-          ${croissantQuantity > 0 ? `${croissantQuantity} x Croissant (€${croissantPrice})` : ''}
-          ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} x Bauernbrot (€${bauernbrotPrice})` : ''}
-          ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} x Laugenstange (€${laugenstangePrice})` : ''}
-          ${esterhazyQuantity > 0 ? `${esterhazyQuantity} x Esterhazy (€${esterhazyPrice})` : ''}
-          ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} x Nussschnecke (€${nussschneckePrice})` : ''}
-          ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
-          ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
-          Delivery Fee: €10.00 per day
-          Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
-          Apartment Number: ${apartmentNumber}
-          Email: ${email}
-          Guest email: ${email}
-          Total Price: €${totalPrice}`,
-      });
-  
-      setConfirmation(orderDetails);
-  
+    
+      // Erstelle Nachricht
+      const message = `
+    *Frühstücksbestellung*
+    Apartment: ${apartmentNumber}
+    Zeitraum: ${formattedFromDate}${formattedToDate ? ` – ${formattedToDate}` : ''}
+    Email: ${email}
+    
+    ${klzillertalQuantity > 0 ? `${klzillertalQuantity} × Zillertal Frühstück (€${klzillertalPrice})\n` : ''}
+    ${grzillertalQuantity > 0 ? `${grzillertalQuantity} × Kleines Frühstück (€${grklzillertalPrice})\n` : ''}
+    ${semmelQuantity > 0 ? `${semmelQuantity} × Semmel (€${semmelPrice})\n` : ''}
+    ${kornspitzQuantity > 0 ? `${kornspitzQuantity} × Kornspitz (€${kornspitzPrice})\n` : ''}
+    ${croissantQuantity > 0 ? `${croissantQuantity} × Croissant (€${croissantPrice})\n` : ''}
+    ${bauernbrotQuantity > 0 ? `${bauernbrotQuantity} × Bauernbrot (€${bauernbrotPrice})\n` : ''}
+    ${laugenstangeQuantity > 0 ? `${laugenstangeQuantity} × Laugenstange (€${laugenstangePrice})\n` : ''}
+    ${esterhazyQuantity > 0 ? `${esterhazyQuantity} × Esterhazy (€${esterhazyPrice})\n` : ''}
+    ${nussschneckeQuantity > 0 ? `${nussschneckeQuantity} × Nussschnecke (€${nussschneckePrice})\n` : ''}
+    ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} × Topfengolatsche (€${topfengolatschenPrice})\n` : ''}
+    ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} × Marmorkuchen (€${marmorkuchenPrice})\n` : ''}
+    Zustellgebühr: €10,00 pro Tag
+    
+    *Gesamtpreis:* €${totalPrice}
+    `;
+    
+      // WhatsApp-Weiterleitung
+      const whatsappNumber = '436767011119'; 
+      const encodedMessage = encodeURIComponent(message.trim());
+      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    
+      window.location.href = whatsappURL;
+    
       toast({
-        title: 'Success',
-        description: 'Order placed successfully! Confirmation sent to your email.',
+        title: 'Weiterleitung zu WhatsApp...',
+        description: 'Deine Bestellung wird über WhatsApp gesendet.',
       });
+    
+      // Optional: Bestelldaten lokal speichern
+      setConfirmation(orderDetails);
+    
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to place order.',
+        title: 'Fehler',
+        description: error.message || 'Bestellung konnte nicht gesendet werden.',
       });
     }
   };
