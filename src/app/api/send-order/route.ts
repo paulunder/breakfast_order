@@ -1,20 +1,13 @@
-// pages/api/send-order.ts
-import { NextApiRequest, NextApiResponse } from 'next'
+// src/app/api/send-order/route.ts
+import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' })
-  }
-
-  const {
-    to,
-    subject,
-    text,
-  } = req.body
+export async function POST(request: Request) {
+  const body = await request.json()
+  const { to, subject, text } = body
 
   if (!to || !subject || !text) {
-    return res.status(400).json({ message: 'Missing required fields' })
+    return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
   }
 
   const transporter = nodemailer.createTransport({
@@ -37,9 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const info = await transporter.sendMail(mailOptions)
-    return res.status(200).json({ message: 'Email sent', info })
+    return NextResponse.json({ message: 'Email sent', info })
   } catch (error) {
     console.error('Error sending email:', error)
-    return res.status(500).json({ message: 'Error sending email' })
+    return NextResponse.json({ message: 'Error sending email' }, { status: 500 })
   }
 }

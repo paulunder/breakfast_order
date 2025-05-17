@@ -310,13 +310,13 @@ const BreakfastOrderButton: React.FC<Props> = (props) => {
         disabled={!isFormValid}
         onClick={handleOrderSubmission}
       >
-        <Image
+        {/* <Image
           src="/images/email_icon.png"
           alt="E-Mail Logo"
           width={20}
           height={20}
           className="inline-block mr-2"
-        />
+        /> */}
         Bestellung senden
       </Button>
     </div>
