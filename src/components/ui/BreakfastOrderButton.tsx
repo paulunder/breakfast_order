@@ -11,19 +11,19 @@
 //   apartmentNumber,
 //   email,
 //   date,
-//   zillertalQuantity,
-//   zillertalPrice,
-//   kleinesQuantity,
-//   kleinesPrice,
+//   grZillertalQuantity,
+//   grZillertalPrice,
+//   klZillertalQuantity,
+//   klZillertalPrice,
 //   totalPrice,
 // }: {
 //   apartmentNumber: string
 //   email: string
 //   date: Date | undefined
-//   zillertalQuantity: number
-//   zillertalPrice: number
-//   kleinesQuantity: number
-//   kleinesPrice: number
+//   grZillertalQuantity: number
+//   grZillertalPrice: number
+//   klZillertalQuantity: number
+//   klZillertalPrice: number
 //   totalPrice: number
 // }) => {
 //   const isDateDisabled = (date: Date | undefined) => {
@@ -70,8 +70,8 @@
 //             Apartment: ${apartmentNumber}
 //             Email: ${email}
 //             Datum: ${date ? format(date, 'PPP') : 'Nicht angegeben'}
-//             ${zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : ''}
-//             ${kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : ''}
+//             ${grZillertalQuantity > 0 ? `Zillertal Frühstück: ${grZillertalQuantity} x €${grZillertalPrice}` : ''}
+//             ${klZillertalQuantity > 0 ? `Kleines Frühstück: ${klZillertalQuantity} x €${klZillertalPrice}` : ''}
 //             Gesamtpreis: €${totalPrice.toFixed(2)}`
 //           )}`}
 //           target="_blank"
@@ -109,10 +109,10 @@ const BreakfastOrderButton = ({
   apartmentNumber,
   email,
   date,
-  zillertalQuantity,
-  zillertalPrice,
-  kleinesQuantity,
-  kleinesPrice,
+  grZillertalQuantity,
+  grZillertalPrice,
+  klZillertalQuantity,
+  klZillertalPrice,
   semmelQuantity,
   semmelPrice,
   kornspitzQuantity,
@@ -136,10 +136,10 @@ const BreakfastOrderButton = ({
   apartmentNumber: string
   email: string
   date: DateRange | undefined
-  zillertalQuantity: number
-  zillertalPrice: number
-  kleinesQuantity: number
-  kleinesPrice: number
+  grZillertalQuantity: number
+  grZillertalPrice: number
+  klZillertalQuantity: number
+  klZillertalPrice: number
   semmelQuantity: number
   semmelPrice: number
   kornspitzQuantity: number
@@ -172,8 +172,8 @@ const BreakfastOrderButton = ({
     `Email: ${email}`,
     date?.from ? `Datum: ${format(date.from, 'PPP')}` : '',
     date?.to ? `bis ${format(date.to, 'PPP')}` : '',
-    zillertalQuantity > 0 ? `Zillertal Frühstück: ${zillertalQuantity} x €${zillertalPrice}` : '',
-    kleinesQuantity > 0 ? `Kleines Frühstück: ${kleinesQuantity} x €${kleinesPrice}` : '',
+    grZillertalQuantity > 0 ? `großes Zillertal Frühstück: ${grZillertalQuantity} x €${grZillertalPrice}` : '',
+    klZillertalQuantity > 0 ? `kleines Zillertal Frühstück: ${klZillertalQuantity} x €${klZillertalPrice}` : '',
     semmelQuantity > 0 ? `Semmel: ${semmelQuantity} x €${semmelPrice}` : '',
     kornspitzQuantity > 0 ? `Kornspitz: ${kornspitzQuantity} x €${kornspitzPrice}` : '',
     croissantQuantity > 0 ? `Croissant: ${croissantQuantity} x €${croissantPrice}` : '',

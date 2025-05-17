@@ -20,8 +20,8 @@ import { de } from "date-fns/locale"
 import ProductCard from '@/components/ui/ProductCard';
 
 export default function Home() {
-  const [zillertalQuantity, setZillertalQuantity] = useState(0);
-  const [kleinesQuantity, setKleinesQuantity] = useState(0);
+  const [grZillertalQuantity, setgrZillertalQuantity] = useState(0);
+  const [klZillertalQuantity, setklZillertalQuantity] = useState(0);
   const [semmelQuantity, setSemmelQuantity] = useState(0);
   const [kornspitzQuantity, setKornspitzQuantity] = useState(0);
   const [croissantQuantity, setCroissantQuantity] = useState(0);
@@ -36,8 +36,8 @@ export default function Home() {
   const [apartmentNumber, setApartmentNumber] = useState('');
   const [confirmation, setConfirmation] = useState<any>(null);
 
-  const zillertalPrice = 15; // Price for Zillertal Frühstück
-  const kleinesPrice = 10; // Price for Kleines Frühstück
+  const grZillertalPrice = 15; // Price for Zillertal Frühstück
+  const klZillertalPrice = 10; // Price for Kleines Frühstück
   const semmelPrice = 0.80;
   const kornspitzPrice = 1.60;
   const croissantPrice = 2.50;
@@ -73,8 +73,8 @@ export default function Home() {
   
     const numDays = extractDaysFromDateRange(dateRange).length;
     const calculatedTotalPrice =
-      (10 + zillertalQuantity * zillertalPrice +
-        kleinesQuantity * kleinesPrice +
+      (10 + grZillertalQuantity * grZillertalPrice +
+        klZillertalQuantity * klZillertalPrice +
         semmelPrice * semmelQuantity +
         kornspitzPrice * kornspitzQuantity +
         croissantPrice * croissantQuantity +
@@ -88,8 +88,8 @@ export default function Home() {
   
     setTotalPrice(calculatedTotalPrice);
       }, [
-        zillertalQuantity,
-        kleinesQuantity,
+        grZillertalQuantity,
+        klZillertalQuantity,
         semmelQuantity,
         kornspitzQuantity,
         croissantQuantity,
@@ -143,7 +143,7 @@ export default function Home() {
       return;
     }
 
-    if (zillertalQuantity === 0 && kleinesQuantity === 0) {
+    if (grZillertalQuantity === 0 && klZillertalQuantity === 0) {
       toast({
         title: 'Error',
         description: 'Please select at least one breakfast.',
@@ -156,8 +156,8 @@ export default function Home() {
       toDate: dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString(),
       email,
       apartmentNumber,
-      zillertalQuantity,
-      kleinesQuantity,
+      grZillertalQuantity,
+      klZillertalQuantity,
       totalPrice,
     };
 
@@ -167,8 +167,8 @@ export default function Home() {
         to: email,
         subject: 'Frühstücksglocke - Order Confirmation',
         body: `Your order has been placed:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${grZillertalQuantity > 0 ? `${grZillertalQuantity} x Zillertal Frühstück (€${grZillertalPrice})` : ''}
+          ${klZillertalQuantity > 0 ? `${klZillertalQuantity} x Kleines Frühstück (€${klZillertalPrice})` : ''}
           on ${format(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Total Price: €${totalPrice}`,
@@ -179,8 +179,8 @@ export default function Home() {
         to: 'owner@example.com',
         subject: 'Frühstücksglocke - New Order',
         body: `New order from Apartment ${apartmentNumber} for:
-          ${zillertalQuantity > 0 ? `${zillertalQuantity} x Zillertal Frühstück (€${zillertalPrice})` : ''}
-          ${kleinesQuantity > 0 ? `${kleinesQuantity} x Kleines Frühstück (€${kleinesPrice})` : ''}
+          ${grZillertalQuantity > 0 ? `${grZillertalQuantity} x Zillertal Frühstück (€${grZillertalPrice})` : ''}
+          ${klZillertalQuantity > 0 ? `${klZillertalQuantity} x Kleines Frühstück (€${klZillertalPrice})` : ''}
           on ${format(dateRange.from, 'PPP')}.
           ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Guest email: ${email}
@@ -203,27 +203,27 @@ export default function Home() {
 
   const resetForm = () => {
     setConfirmation(null);
-    setZillertalQuantity(0);
-    setKleinesQuantity(0);
+    setgrZillertalQuantity(0);
+    setklZillertalQuantity(0);
     setDateRange(undefined);
     setEmail('');
     setApartmentNumber('');
   };
 
   const incrementZillertal = () => {
-    setZillertalQuantity((prev) => prev + 1);
+    setgrZillertalQuantity((prev) => prev + 1);
   };
 
   const decrementZillertal = () => {
-    setZillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+    setgrZillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const incrementKleines = () => {
-    setKleinesQuantity((prev) => prev + 1);
+    setklZillertalQuantity((prev) => prev + 1);
   };
 
   const decrementKleines = () => {
-    setKleinesQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+    setklZillertalQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const incrementSemmel = () => {
@@ -315,14 +315,14 @@ export default function Home() {
           {confirmation ? (
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-gray-800">Bestellbestätigung</h2>
-              {confirmation.zillertalQuantity > 0 && (
+              {confirmation.grZillertalQuantity > 0 && (
                 <p className="text-gray-700">
-                  Zillertal Frühstück: {confirmation.zillertalQuantity} x €{zillertalPrice}
+                  großes Zillertal Frühstück: {confirmation.grZillertalQuantity} x €{grZillertalPrice}
                 </p>
               )}
-              {confirmation.kleinesQuantity > 0 && (
+              {confirmation.klZillertalQuantity > 0 && (
                 <p className="text-gray-700">
-                  Kleines Frühstück: {confirmation.kleinesQuantity} x €{kleinesPrice}
+                  kleines Zillertal Frühstück: {confirmation.klZillertalQuantity} x €{klZillertalPrice}
                 </p>
               )}
               <p className="text-gray-700">
@@ -369,20 +369,20 @@ export default function Home() {
               <div className="h4">Frühstücksservice</div>
 
               <ProductCard
-                title="kleines Zillertaler Frühstück"
-                description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse"
-                price={zillertalPrice}
-                quantity={zillertalQuantity}
+                title="großes Zillertaler Frühstück"
+                description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse"
+                price={grZillertalPrice}
+                quantity={grZillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
                 increment={incrementZillertal}
                 decrement={decrementZillertal}
               />
 
               <ProductCard
-                title="großes Zillertaler Frühstück"
-                description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse"
-                price={kleinesPrice}
-                quantity={kleinesQuantity}
+                title="kleines Zillertaler Frühstück"
+                description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse"
+                price={klZillertalPrice}
+                quantity={klZillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
                 increment={incrementKleines}
                 decrement={decrementKleines}
@@ -528,10 +528,10 @@ export default function Home() {
                 apartmentNumber={apartmentNumber}
                 email={email}
                 date={dateRange}
-                zillertalQuantity={zillertalQuantity}
-                zillertalPrice={zillertalPrice}
-                kleinesQuantity={kleinesQuantity}
-                kleinesPrice={kleinesPrice}
+                grZillertalQuantity={grZillertalQuantity}
+                grZillertalPrice={grZillertalPrice}
+                klZillertalQuantity={klZillertalQuantity}
+                klZillertalPrice={klZillertalPrice}
                 semmelQuantity={semmelQuantity}
                 semmelPrice={semmelPrice}
                 kornspitzQuantity={kornspitzQuantity}
