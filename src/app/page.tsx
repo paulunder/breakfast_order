@@ -493,6 +493,7 @@ export default function Home() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="guest@example.com"
+                  suppressHydrationWarning
                 />
               </div>
 
