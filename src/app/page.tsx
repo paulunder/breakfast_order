@@ -128,24 +128,20 @@ export default function Home() {
       return;
     }
   
-    if (typeof window === 'undefined') {
-      // Serverseitig kein Datum vergleichen
-      return;
-    }
+    // Use client-side only validation
+    if (typeof window !== 'undefined') {
+      // Move this check inside the client-only block
+      const now = new Date();
+      const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
   
-    const now = new Date();
-    const sixteenHoursToday = setHours(setMinutes(setSeconds(now, 0), 0), 16);
-  
-    // Check if the selected start date is today and after 4 PM
-    if (
-      isToday(dateRange.from) &&
-      now >= sixteenHoursToday
-    ) {
-      toast({
-        title: 'Error',
-        description: 'Orders for today must be placed before 4 PM.',
-      });
-      return;
+      // Check if the selected start date is today and after 4 PM
+      if (isToday(dateRange.from) && now >= sixteenHoursToday) {
+        toast({
+          title: 'Error',
+          description: 'Orders for today must be placed before 4 PM.',
+        });
+        return;
+      }
     }
     
     if (klzillertalQuantity === 0 && grzillertalQuantity === 0 &&
@@ -160,7 +156,13 @@ export default function Home() {
       });
       return;
     }
-
+  
+    // Create a consistent date string format that won't cause hydration issues
+    // Use a method that will give the same result on server and client
+    const formatDateConsistently = (date) => {
+      return date ? date.toISOString() : '';
+    };
+  
     const orderDetails = {
       fromDate: dateRange.from.toISOString(),
       toDate: dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString(),
@@ -179,8 +181,22 @@ export default function Home() {
       marmorkuchenQuantity,
       totalPrice,
     };
-
+  
     try {
+      // For display in emails, format the dates client-side only
+      let formattedFromDate = '';
+      let formattedToDate = '';
+      
+      if (typeof window !== 'undefined') {
+        // Client-side only formatting with the locale
+        formattedFromDate = format(dateRange.from, 'PPP', { locale: de });
+        formattedToDate = dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : '';
+      } else {
+        // Server-side fallback that won't be visible to users
+        formattedFromDate = formatDateConsistently(dateRange.from);
+        formattedToDate = formatDateConsistently(dateRange.to);
+      }
+  
       // Guest email
       await sendEmail({
         to: email,
@@ -198,14 +214,12 @@ export default function Home() {
           ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
           ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
           Delivery Fee: €10.00 per day
-          Date: ${format(dateRange.from, 'PPP', { locale: de })} – ${dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : ''}
+          Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
           Apartment Number: ${apartmentNumber}
           Email: ${email}
-          on ${format(dateRange.from, 'PPP')}.
-          ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Total Price: €${totalPrice}`,
       });
-
+  
       // Owner email
       await sendEmail({
         to: 'owner@example.com',
@@ -223,17 +237,15 @@ export default function Home() {
           ${topfengolatschenQuantity > 0 ? `${topfengolatschenQuantity} x Topfengolatsche (€${topfengolatschenPrice})` : ''}
           ${marmorkuchenQuantity > 0 ? `${marmorkuchenQuantity} x Marmorkuchen (€${marmorkuchenPrice})` : ''}
           Delivery Fee: €10.00 per day
-          Date: ${format(dateRange.from, 'PPP', { locale: de })} – ${dateRange.to ? format(dateRange.to, 'PPP', { locale: de }) : ''}
+          Date: ${formattedFromDate}${dateRange.to ? ` – ${formattedToDate}` : ''}
           Apartment Number: ${apartmentNumber}
           Email: ${email}
-          on ${format(dateRange.from, 'PPP')}.
-          ${dateRange.to ? `To: ${format(dateRange.to, 'PPP')}` : ''}
           Guest email: ${email}
           Total Price: €${totalPrice}`,
       });
-
+  
       setConfirmation(orderDetails);
-
+  
       toast({
         title: 'Success',
         description: 'Order placed successfully! Confirmation sent to your email.',
