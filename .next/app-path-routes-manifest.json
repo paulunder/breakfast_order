@@ -1,5 +1,5 @@
 {
-  "/api/send-order/route": "/api/send-order",
   "/_not-found/page": "/_not-found",
+  "/api/send-order/route": "/api/send-order",
   "/page": "/"
 }

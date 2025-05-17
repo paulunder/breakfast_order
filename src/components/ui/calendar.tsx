@@ -160,7 +160,15 @@ function Calendar({
   locale,
   ...props
 }: CalendarProps) {
-  const now = new Date()
+  // statt: const now = new Date()
+  const [now, setNow] = React.useState<Date | null>(null)
+
+  React.useEffect(() => {
+    setNow(new Date())
+  }, [])
+
+  if (!now) return null
+
   const cutoff = setHours(startOfDay(now), 16)
   const today = startOfDay(now)
   const tomorrow = startOfDay(addDays(now, 1))
@@ -200,7 +208,7 @@ function Calendar({
       mode="range"
       selected={selected}
       onSelect={handleSelectRange}
-      locale={locale} // <-- übergeben
+      locale={locale}
       showOutsideDays={showOutsideDays}
       disabled={disableDate}
       className={cn("p-3", className)}
@@ -250,6 +258,7 @@ function Calendar({
     />
   )
 }
+
 
 Calendar.displayName = "Calendar"
 
