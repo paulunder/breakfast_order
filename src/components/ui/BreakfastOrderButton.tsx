@@ -203,20 +203,21 @@ const BreakfastOrderButton = ({
       {/* Fehlermeldung, wenn ein Feld nicht ausgefüllt ist */}
       {(!date || !date.from || isDateDisabled(date) || !apartmentNumber || !email || !isValidEmail(email)) && (
         <div className="text-sm text-red-600 mt-2 bg-red-100 p-2 rounded">
-          {!date
-            ? "Bitte ein Datum auswählen."
-            : !date.from
-            ? "Bitte ein Startdatum auswählen."
-            : isDateDisabled(date)
-            ? "Das gewählte Datum liegt in der Vergangenheit."
-            : !apartmentNumber
-            ? "Bitte die Apartment-Nummer eingeben."
-            : !email
-            ? "Bitte die E-Mail-Adresse eingeben."
-            : !isValidEmail(email)
-            ? "Die E-Mail-Adresse ist ungültig."
-            : null}
-        </div>
+        {!date
+          ? "Bitte ein Datum auswählen. | Please select a date."
+          : !date.from
+          ? "Bitte ein Startdatum auswählen. | Please select a start date."
+          : isDateDisabled(date)
+          ? "Das gewählte Datum liegt in der Vergangenheit. | The selected date is in the past."
+          : !apartmentNumber
+          ? "Bitte die Apartment-Nummer eingeben. | Please enter the apartment number."
+          : !email
+          ? "Bitte die E-Mail-Adresse eingeben. | Please enter your email address."
+          : !isValidEmail(email)
+          ? "Die E-Mail-Adresse ist ungültig. | The email address is invalid."
+          : null}
+      </div>
+      
       )}
 
       
