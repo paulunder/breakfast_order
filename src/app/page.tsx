@@ -309,7 +309,7 @@ export default function Home() {
             Frühstücksglocke
           </CardTitle>
           <CardDescription className="text-sm text-gray-600">
-          Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – auf Wunsch auch komplette Frühstücksvariationen – direkt vor eure Apartmenttür.          </CardDescription>
+          Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – auf Wunsch auch komplette Frühstücksvariationen – direkt vor eure Apartmenttür. | Every morning, we deliver fresh bread and crispy pastries from the local artisan bakery ezeb – and full breakfast options on request – right to your apartment door.         </CardDescription>
         </CardHeader>
         <CardContent>
           {confirmation ? (
@@ -344,7 +344,7 @@ export default function Home() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="apartmentNumber">Apartment Nummer</Label>
+                <Label htmlFor="apartmentNumber">Appartment Nummer | Apartment Number</Label>
                 <Input
                   id="apartmentNumber"
                   type="text"
@@ -366,11 +366,11 @@ export default function Home() {
                 />
               </div>
 
-              <div className="h4">Frühstücksservice</div>
+              <div className="h4">Frühstücksservice | Breakfast service</div>
 
               <ProductCard
-                title="großes Zillertaler Frühstück"
-                description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse"
+                title="großes Zillertaler Frühstück | large Zillertal breakfast"
+                description="Marmelade, Butter, 1 Semmel, 1 Croissant, Schwarzbrot, Wurst & Käse |  jam, butter, 1 bread roll, 1 croissant, rye bread, cold cuts & cheese"
                 price={grZillertalPrice}
                 quantity={grZillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
@@ -379,8 +379,8 @@ export default function Home() {
               />
 
               <ProductCard
-                title="kleines Zillertaler Frühstück"
-                description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse"
+                title="kleines Zillertaler Frühstück | small Zillertal breakfast"
+                description="Marmelade, Butter, 1 Semmel, 1 Scheibe Bauernbrot, Wurst & Käse | jam, butter, 1 bread roll, 1 slice of farmer's bread, cold cuts & cheese"
                 price={klZillertalPrice}
                 quantity={klZillertalQuantity}
                 imageUrl="https://picsum.photos/200/150"
@@ -389,10 +389,10 @@ export default function Home() {
               />
 
               <div className="border-t border-gray-300 my-4"></div>
-              <div className="h4">Brötchenservice</div>
+              <div className="h4">Brötchenservice | Bread roll delivery service</div>
 
               <ProductCard
-                title="Semmel"
+                title="Semmel | Bread roll"
                 description=""
                 price={semmelPrice}
                 quantity={semmelQuantity}
@@ -402,7 +402,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Kornspitz"
+                title="Kornspitz | Multigrain roll"
                 description=""
                 price={kornspitzPrice}
                 quantity={kornspitzQuantity}
@@ -412,7 +412,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Croissant"
+                title="Croissant | Croissant"
                 description=""
                 price={croissantPrice}
                 quantity={croissantQuantity}
@@ -422,7 +422,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Bauernbrotscheibe"
+                title="Bauernbrotscheibe | Slice of farmer’s bread"
                 description=""
                 price={bauernbrotPrice}
                 quantity={bauernbrotQuantity}
@@ -432,7 +432,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Laugenstange"
+                title="Laugenstange | Pretzel stick"
                 description=""
                 price={laugenstangePrice}
                 quantity={laugenstangeQuantity}
@@ -442,10 +442,10 @@ export default function Home() {
               />
 
               <div className="border-t border-gray-300 my-4"></div>
-              <div className="h4">Süßes</div>
+              <div className="h4">Süßes | Sweets</div>
 
               <ProductCard
-                title="Esterhazy"
+                title="Esterhazy | Esterházy slice"
                 description=""
                 price={esterhazyPrice}
                 quantity={esterhazyQuantity}
@@ -455,7 +455,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Nussschnecke"
+                title="Nussschnecke | Nut swirl pastry"
                 description=""
                 price={nussschneckePrice}
                 quantity={nussschneckeQuantity}
@@ -465,7 +465,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Topfengolatsche"
+                title="Topfengolatsche | Curd cheese Danish"
                 description=""
                 price={topfengolatschenPrice}
                 quantity={topfengolatschenQuantity}
@@ -475,7 +475,7 @@ export default function Home() {
               />
 
               <ProductCard
-                title="Marmorkuchen"
+                title="Marmorkuchen | Marble cake"
                 description=""
                 price={marmorkuchenPrice}
                 quantity={marmorkuchenQuantity}
@@ -485,26 +485,27 @@ export default function Home() {
               />
 
               <div>
-                <Label>Datum</Label>
+                <Label>Datum | Date</Label>
                 <Calendar
                   selected={dateRange}
                   onSelect={setDateRange}
                   locale={de}
                   className="rounded-md border bg-white"
                 />
+
                 {dateRange?.from && dateRange?.to ? (
                   <p className="mt-2 text-sm text-muted-foreground">
                     {format(dateRange.from, 'PPP', { locale: de })} – {format(dateRange.to, 'PPP', { locale: de })}
                   </p>
                 ) : (
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Bitte wähle eine Zeitspanne aus.
+                    Bitte wähle eine Zeitspanne aus. | Please select a date range.
                   </p>
                 )}
               </div>
 
               <div>
-                <Label>Zustellgebühr täglich</Label>
+                <Label>Zustellgebühr täglich | daily delivery fee</Label>
                 <Input
                   id="deliveryFee"
                   type="text"
@@ -514,7 +515,7 @@ export default function Home() {
               </div>
 
               <div>
-                <Label htmlFor="total">Summe</Label>
+                <Label htmlFor="total">Summe | Total</Label>
                 <Input
                   id="total"
                   type="text"
