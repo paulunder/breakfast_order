@@ -309,7 +309,7 @@ export default function Home() {
             Frühstücksglocke
           </CardTitle>
           <CardDescription className="text-sm text-gray-600">
-          Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – auf Wunsch auch komplette Frühstücksvariationen – direkt vor eure Apartmenttür. | Every morning, we deliver fresh bread and crispy pastries from the local artisan bakery ezeb – and full breakfast options on request – right to your apartment door.         </CardDescription>
+          Jeden Morgen bringen wir euch frisches Brot und knuspriges Gebäck vom regionalen Handwerksbäcker ezeb – direkt vor eure Apartmenttür. | Every morning, we deliver fresh bread and crispy pastries from the local artisan bakery ezeb – right to your apartment door.         </CardDescription>
         </CardHeader>
         <CardContent>
           {confirmation ? (
