@@ -366,7 +366,7 @@ export default function Home() {
                 />
               </div>
 
-              <div className="h4">Frühstücksservice | Breakfast service</div>
+              {/* <div className="h4">Frühstücksservice | Breakfast service</div>
 
               <ProductCard
                 title="großes Zillertaler Frühstück | large Zillertal breakfast"
@@ -388,7 +388,7 @@ export default function Home() {
                 decrement={decrementKleines}
               />
 
-              <div className="border-t border-gray-300 my-4"></div>
+              <div className="border-t border-gray-300 my-4"></div> */}
               <div className="h4">Brötchenservice | Bread roll delivery service</div>
 
               <ProductCard
@@ -529,10 +529,10 @@ export default function Home() {
                 apartmentNumber={apartmentNumber}
                 email={email}
                 date={dateRange}
-                grZillertalQuantity={grZillertalQuantity}
-                grZillertalPrice={grZillertalPrice}
-                klZillertalQuantity={klZillertalQuantity}
-                klZillertalPrice={klZillertalPrice}
+                // grZillertalQuantity={grZillertalQuantity}
+                // grZillertalPrice={grZillertalPrice}
+                // klZillertalQuantity={klZillertalQuantity}
+                // klZillertalPrice={klZillertalPrice}
                 semmelQuantity={semmelQuantity}
                 semmelPrice={semmelPrice}
                 kornspitzQuantity={kornspitzQuantity}
